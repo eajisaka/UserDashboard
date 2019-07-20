@@ -12,7 +12,7 @@
             <li class='ml- nav-item'>
                 <p class='mt-2 ml-5 mr-3 font-weight-bold'>Messenger</p>
             </li>
-            {% if request.session.admin_level == "normal" %}
+            {% if curr_user.admin_level == "normal" %}
             <li class='nav-item'>
                 <a class='nav-link' href="/dashboard">Dashboard</a>
             </li>
@@ -39,6 +39,13 @@
             <div class='user_info col-lg-6'>
                 <form class='border border-dark p-3' method='POST' action='/admin_edit_user/{{user.id}}'>
                     {% csrf_token %}
+                    {% if messages %}
+                    {% for message in messages %}
+                    {% if message.tags == "edit_error error" %}
+                    <p><small class='text-danger'>{{message}}</small></p>
+                    {% endif %}
+                    {% endfor %}
+                    {% endif %}
                     <h4 class='text-left mb-4'>Edit Information</h4>
                     <input type='hidden' name='edit_id' value='{{user.id}}'>
                     <label for='edit_email'>Email Address:</label>
@@ -72,6 +79,9 @@
                     <select class='form-control mb-3' name='edit_user_level'>
                         <option>normal</option>
                         <option>admin</option>
+                        {% if curr_user.admin_level == "superadmin" %}
+                        <option>superadmin</option>
+                        {% endif %}
                     </select>
                     <div class='row justify-content-end'>
                         {% if messages %}
@@ -88,6 +98,13 @@
             <div class='password_info col-lg-6'>
                 <form class='border border-dark p-3' method='POST' action='/admin_edit_password/{{user.id}}'>
                     {% csrf_token %}
+                    {% if messages %}
+                    {% for message in messages %}
+                    {% if message.tags == "edit_pass_error error" %}
+                    <p><small class='text-danger'>{{message}}</small></p>
+                    {% endif %}
+                    {% endfor %}
+                    {% endif %}
                     <h4 class='mb-4'>Change password</h4>
                     <label for='edit_pass1'>Password:</label>
                     {% if messages %}

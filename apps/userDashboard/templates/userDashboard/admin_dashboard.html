@@ -30,6 +30,13 @@
     <div class='container'>
         <div class='row mt-5'>
             <h4>Manage Users</h2>
+            {% if messages %}
+            {% for message in messages %}
+            {% if message.tags == "delete_error error" %}
+                <p class='ml-3 my-auto text-danger p-0'>{{message}}</p>
+            {% endif %}
+            {% endfor %}
+            {% endif %}
             <a class='btn btn-info ml-auto border border-dark' href='/add_new'>Add New</a>
         </div>
         <table class="table table-hover mt-4">
