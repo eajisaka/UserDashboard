@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <title>User Dashboard</title>
+    {% load static %}
+    <link rel='stylesheet' href="{% static 'userDashboard/css/edit_profile.css' %}">
+</head>
+<body>
+    <div class='top'>
+        <ul class='nav'>
+            <li class='ml- nav-item'>
+                <p class='mt-2 ml-5 mr-3 font-weight-bold'>Messenger</p>
+            </li>
+            {% if request.session.admin_level == "normal" %}
+            <li class='nav-item'>
+                <a class='nav-link' href="/dashboard">Dashboard</a>
+            </li>
+            {% else %}
+            <li class='nav-item'>
+                <a class='nav-link' href="/dashboard/admin">Dashboard</a>
+            </li>
+            {% endif %}
+            <li class='nav-item'>
+                    <a class='nav-link' href="/profile/{{request.session.user_id}}">Profile</a>
+                </li>
+            <li class='nav-item'>
+                <a class='nav-link' href=""><b>Edit Profile</b></a>
+            </li>
+            <li class='mr-5 nav-item ml-auto'>
+                <a class='nav-link' href="/logout">Log Out</a>
+            </li>
+        </ul>
+        <hr class='m-0'>
+    </div>
+    <div class='container'>
+        <h4 class='mt-3'>Edit Profile of User #{{user.id}}</h4>
+        <div class='row mt-4'>
+            <div class='user_info col-lg-6'>
+                <form class='border border-dark p-3' method='POST' action='/admin_edit_user/{{user.id}}'>
+                    {% csrf_token %}
+                    <h4 class='text-left mb-4'>Edit Information</h4>
+                    <input type='hidden' name='edit_id' value='{{user.id}}'>
+                    <label for='edit_email'>Email Address:</label>
+                    {% if messages %}
+                    {% for message in messages %}
+                    {% if message.tags == "email error" %}
+                    <p><small class='text-danger'>{{message}}</small></p>
+                    {% endif %}
+                    {% endfor %}
+                    {% endif %}
+                    <input class='mb-3 form-control' type='text' name='edit_email' value='{{user.email}}'>
+                    <label for='edit_first_name'>First Name:</label>
+                    {% if messages %}
+                    {% for message in messages %}
+                    {% if message.tags == "first error" %}
+                    <p><small class='text-danger'>{{message}}</small></p>
+                    {% endif %}
+                    {% endfor %}
+                    {% endif %}
+                    <input class='mb-3 form-control' type='text' name='edit_first_name' value='{{user.first_name}}'>
+                    <label for='edit_last_name'>Last Name:</label>
+                    {% if messages %}
+                    {% for message in messages %}
+                    {% if message.tags == "last error" %}
+                    <p><small class='text-danger'>{{message}}</small></p>
+                    {% endif %}
+                    {% endfor %}
+                    {% endif %}
+                    <input class='mb-3 form-control' type='text' name='edit_last_name' value='{{user.last_name}}'>
+                    <label class='text-left' for='edit_user_level'>User Level</label>
+                    <select class='form-control mb-3' name='edit_user_level'>
+                        <option>normal</option>
+                        <option>admin</option>
+                    </select>
+                    <div class='row justify-content-end'>
+                        {% if messages %}
+                        {% for message in messages %}
+                        {% if message.tags == "profile success" %}
+                        <p class='mr-3 my-auto text-success p-0'>{{message}}</p>
+                        {% endif %}
+                        {% endfor %}
+                        {% endif %}
+                        <button type='submit' class='mr-3 mt-2 text-right btn btn-success border border-dark'>Save</button>
+                    </div>
+                </form>
+            </div>
+            <div class='password_info col-lg-6'>
+                <form class='border border-dark p-3' method='POST' action='/admin_edit_password/{{user.id}}'>
+                    {% csrf_token %}
+                    <h4 class='mb-4'>Change password</h4>
+                    <label for='edit_pass1'>Password:</label>
+                    {% if messages %}
+                    {% for message in messages %}
+                    {% if message.tags == "pass1 error" %}
+                    <p><small class='text-danger'>{{message}}</small></p>
+                    {% endif %}
+                    {% endfor %}
+                    {% endif %}
+                    <input class='mb-3 form-control' type='text' name='edit_pass1'>
+                    <label for='edit_pass2'>Confirm Password:</label>
+                    {% if messages %}
+                    {% for message in messages %}
+                    {% if message.tags == "pass2 error" %}
+                    <p><small class='text-danger'>{{message}}</small></p>
+                    {% endif %}
+                    {% endfor %}
+                    {% endif %}
+                    <input class='mb-3 form-control' type='text' name='edit_pass2'>
+                    <div class='row justify-content-end'>
+                        {% if messages %}
+                        {% for message in messages %}
+                        {% if message.tags == "password success" %}
+                        <p class='mr-3 my-auto text-success p-0'>{{message}}</p>
+                        {% endif %}
+                        {% endfor %}
+                        {% endif %}
+                        <button type='submit' class='mr-3 mt-2 text-right btn btn-success border border-dark'>Update Password</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

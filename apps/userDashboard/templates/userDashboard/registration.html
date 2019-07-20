@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <title>User Dashboard</title>
+    {% load static %}
+    <link rel='stylesheet' href="{% static 'userDashboard/css/registration.css' %}">
+</head>
+<body>
+    <div class='top'>
+        <ul class='nav'>
+            <li class='nav-item'>
+                <p class='mt-2 ml-5 mr-3 font-weight-bold'>Messenger</p>
+            </li>
+            <li class='nav-item'>
+                <a class='nav-link' href="/">Home</a>
+            </li>
+            <li class='mr-5 nav-item ml-auto'>
+                <a class='nav-link' href="/signin">Sign in</a>
+            </li>
+        </ul>
+        <hr class='m-0'>
+    </div>
+    <div class='container text-left'>
+        <div class='row'>
+            <div class='left_side col-lg-6'>
+                <img src="{% static 'userDashboard/images/register_icon.png' %}" id='register_icon'>
+            </div>
+            <div class='right_side col-lg-6'>
+                <form class='form-register' method="POST" action="/register_user">
+                    {% csrf_token %}
+                    <h1 class='text-left text-secondary'>Register</h1>
+                    <label for='register_email'>Email Address:</label>
+                    {% if messages %}
+                    {% for message in messages %}
+                    {% if message.tags == "email error" %}
+                    <p><small class='text-danger'>{{message}}</small></p>
+                    {% endif %}
+                    {% endfor %}
+                    {% endif %}
+                    <input class='mb-3 form-control' type='text' name='register_email'>
+                    <label for='register_first_name'>First Name:</label>
+                    {% if messages %}
+                    {% for message in messages %}
+                    {% if message.tags == "first error" %}
+                    <p><small class='text-danger'>{{message}}</small></p>
+                    {% endif %}
+                    {% endfor %}
+                    {% endif %}
+                    <input class='mb-3 form-control' type='text' name='register_first_name'>
+                    <label for='register_last_name'>Last Name:</label>
+                    {% if messages %}
+                    {% for message in messages %}
+                    {% if message.tags == "last error" %}
+                    <p><small class='text-danger'>{{message}}</small></p>
+                    {% endif %}
+                    {% endfor %}
+                    {% endif %}
+                    <input class='mb-3 form-control' type='text' name='register_last_name'>
+                    <label for='register_pass1'>Password:</label>
+                    {% if messages %}
+                    {% for message in messages %}
+                    {% if message.tags == "pass1 error" %}
+                    <p><small class='text-danger'>{{message}}</small></p>
+                    {% endif %}
+                    {% endfor %}
+                    {% endif %}
+                    <input class='mb-3 form-control' type='text' name='register_pass1'>
+                    <label for='register_pass2'>Confirm Password:</label>
+                    {% if messages %}
+                    {% for message in messages %}
+                    {% if message.tags == "pass2 error" %}
+                    <p><small class='text-danger'>{{message}}</small></p>
+                    {% endif %}
+                    {% endfor %}
+                    {% endif %}
+                    <input class='mb-3 form-control' type='text' name='register_pass2'>
+                    <button class='btn btn-primary' type='submit'>Register</button>
+                </form>
+            </div>
+        </div>    
+    </div>
+</body>
+</html>

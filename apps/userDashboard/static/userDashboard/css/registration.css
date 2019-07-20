@@ -1,0 +1,15 @@
+.form-register{
+    max-width: 400px;
+    margin: auto;
+}
+
+.left_side{
+    text-align: center;
+    vertical-align: middle;
+}
+
+#register_icon{
+    height: 100%;
+    width: 100%;
+
+}

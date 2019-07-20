@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <title>User Dashboard</title>
+</head>
+<body>
+    <div class='top'>
+        <ul class='nav'>
+            <li class='ml- nav-item'>
+                <p class='mt-2 ml-5 mr-3 font-weight-bold'>Messenger</p>
+            </li>
+            {% if request.session.admin_level == "normal" %}
+                <li class='nav-item'>
+                    <a class='nav-link' href="/dashboard">Dashboard</a>
+                </li>
+            {% else %}
+                <li class='nav-item'>
+                    <a class='nav-link' href="/dashboard/admin">Dashboard</a>
+                </li>
+            {% endif %}
+            {% if user.id == request.session.user_id %}
+                <li class='nav-item'>
+                    <a class='nav-link' href="/profile/{{request.session.user_id}}"><b>Profile</b></a>
+                </li>
+                <li class='nav-item'>
+                    <a class='nav-link' href="/edit">Edit Profile</a>
+                </li>
+            {% else %}
+                <li class='nav-item'>
+                    <a class='nav-link' href="/profile/{{request.session.user_id}}">Profile</a>
+                </li>
+            {% endif %}
+            <li class='mr-5 nav-item ml-auto'>
+                <a class='nav-link' href="/logout">Log Out</a>
+            </li>
+        </ul>
+        <hr class='m-0'>
+    </div>
+    <div class='container'>
+        <div class='profile text-left'>
+            <h4 class='mt-3'>{{user.first_name}} {{user.last_name}}</h4>
+            <div class='row'>
+                <div class='labels col-lg-2 mt-2'>
+                    <p>Registered at: </p>
+                    <p>User ID: </p>
+                    <p>Email address: </p>
+                    <p>Description: </p>
+                </div>
+                <div class='data col-lg-6 mt-2'>
+                    <p>{{user.created_at}}</p>
+                    <p>#{{user.id}}</p>
+                    <p>{{user.email}}</p>
+                    <p>{{user.description}}</p>
+                </div>
+            </div>
+            {% if user.id != request.session.user_id %}
+            <form method ='POST' action='/message/{{user.id}}'>
+                {% csrf_token %}
+                <h4>Leave a message for {{user.first_name}}</h4>
+                <textarea name='message_description' class='form-control'></textarea>
+                <div class='row justify-content-end'>
+                    {% if messages %}
+                    {% for message in messages %}
+                    {% if message.tags == "add_message success" %}
+                        <p class='ml-3 my-auto text-success p-0'>{{message}}</p>
+                    {% endif %}
+                    {% endfor %}
+                    {% endif %}
+                <button type='submit' class='mr-3 mt-3 text-right btn btn-info border border-dark'>Post</button>
+                </div>
+            </form>
+            {% else %}
+            {% endif %}
+        </div>
+            {% for message in user_messages %}
+            <div class='card mt-3 border border-dark'>
+                <div class ='card-body'>
+                    <h5 class='card-title'><a href='/profile/{{message.sender.id}}'>{{message.sender.first_name}} {{message.sender.last_name}}</a> wrote:</h5>
+                    <h6 class='card-subtitle mb-2 text-muted'>{{message.created_at}}</h6>
+                    <p class='card-text'>{{message.message}}</p>
+                </div>
+            </div>
+            {% for comment in comments %}
+            {% if comment.the_message.id == message.id %}
+            <div class='card mt-3 border border-dark col-lg-10 ml-auto'>
+                <div class ='card-body'>
+                    <h5 class='card-title'><a href='/profile/{{comment.commenter.id}}'>{{comment.commenter.first_name}} {{comment.commenter.last_name}}</a> wrote:</h5>
+                    <h6 class='card-subtitle mb-2 text-muted'>{{comment.created_at}}</h6>
+                    <p class='card-text'>{{comment.comment}}</p>
+                </div>
+            </div>
+            {% endif %}
+            {% endfor %}
+            <form class='col-lg-10 ml-auto p-0 mt-3' method="POST" action='/comment/{{user.id}}/{{message.id}}'>
+                {% csrf_token %}
+                <textarea name='comment_description' class='form-control'></textarea>
+                <div class='row justify-content-end'>
+                    <button type='submit' class='mr-3 mt-3 btn btn-info border border-dark'>Comment</button>
+                </div>
+            </form>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>
