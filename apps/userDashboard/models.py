@@ -93,6 +93,7 @@ class Message(models.Model):
     message = models.TextField(null=True)
     sender = models.ForeignKey(User, related_name = "sent_by")
     receiver = models.ForeignKey(User, related_name = "received_by")
+    read_status = models.IntegerField(null=True)
     created_at = models.DateTimeField(auto_now_add = True)
     updated_at = models.DateTimeField(auto_now = True)
     def __repr__(self):

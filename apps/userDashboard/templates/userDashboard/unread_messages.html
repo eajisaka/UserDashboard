@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <title>User Dashboard</title>
+</head>
+<body>
+    <div class='top'>
+        <ul class='nav'>
+            <li class='ml- nav-item'>
+                <p class='mt-2 ml-5 mr-3 font-weight-bold'>Messenger</p>
+            </li>
+            {% if request.session.admin_level == "normal" %}
+                <li class='nav-item'>
+                    <a class='nav-link' href="/dashboard">Dashboard</a>
+                </li>
+            {% else %}
+                <li class='nav-item'>
+                    <a class='nav-link' href="/dashboard/admin">Dashboard</a>
+                </li>
+            {% endif %}
+            {% if user.id == request.session.user_id %}
+                <li class='nav-item'>
+                    <a class='nav-link' href="/profile/{{request.session.user_id}}"><b>Profile</b></a>
+                </li>
+                <li class='nav-item'>
+                    <a class='nav-link' href="/edit">Edit Profile</a>
+                </li>
+            {% else %}
+                <li class='nav-item'>
+                    <a class='nav-link' href="/profile/{{request.session.user_id}}">Profile</a>
+                </li>
+            {% endif %}
+            <li class='mr-5 nav-item ml-auto'>
+                <a class='nav-link' href="/logout">Log Out</a>
+            </li>
+        </ul>
+        <hr class='m-0'>
+    </div>
+    <div class='container mt-5 text-center'>
+        {% if total_unread.count == 0 %}
+        <h2>You don't have any unread messages!</h2>
+        {% endif %}
+        {% for message in new_messages %}
+        <div class='card mt-3 border border-dark'>
+            <div class ='card-body'>
+                <h5 class='card-title'><a href='/profile/{{message.sender.id}}'>{{message.sender.first_name}} {{message.sender.last_name}}</a> messaged:</h5>
+                <h6 class='card-subtitle mb-2 text-muted'>{{message.created_at}}</h6>
+                <p class='card-text'>{{message.message}}</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</body>
+</html>

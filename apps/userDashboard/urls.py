@@ -23,4 +23,5 @@ urlpatterns = [
     url(r'^register_user$', views.register_user),
     url(r'^signin$', views.signin),
     url(r'^signin_user$', views.signin_user),
+    url(r'^unread$', views.unread_messages),
 ]

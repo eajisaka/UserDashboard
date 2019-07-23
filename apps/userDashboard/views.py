@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
+from django.db.models import Count, Sum
 from .models import User, UserManager, Message, Comment
 import bcrypt
 
@@ -26,9 +27,13 @@ def admin_dashboard(request):
     user = User.objects.get(id = request.session['user_id'])
     if user.admin_level == "superadmin" or user.admin_level == "admin": 
         users = User.objects.all()
+        user_messages = Message.objects.filter(receiver = user).order_by('-created_at')[:3]
+        total_unread = Message.objects.filter(receiver = user).filter(read_status = 0).annotate(count=Count('read_status'))
         context = {
         "users" : users,
-        "user" : user
+        "user" : user,
+        "user_messages" : user_messages,
+        "total_unread" : total_unread
         }
         return render(request, "userDashboard/admin_dashboard.html", context)
     return redirect('/dashboard')
@@ -189,18 +194,23 @@ def logout(request):
     request.session['user_id'] = None
     return redirect('/')
 
-#Sends new message to user in profile
+#Sends new message to user in profile, sent read_status to 0 (unread)
 def message(request, user_id):
     receiver = User.objects.get(id = user_id)
     sender = User.objects.get(id = request.session['user_id'])
-    new_message = Message.objects.create(message=request.POST['message_description'], sender = sender, receiver = receiver)
+    new_message = Message.objects.create(message=request.POST['message_description'], sender = sender, receiver = receiver, read_status = 0)
     messages.success(request, 'Message posted', extra_tags = 'add_message')
     return redirect (f'/profile/{user_id}')
 
-#Renders profile page for each userid given, showing their messages and comments to those messages
+#Renders profile page for each userid given, showing their messages and comments to those messages, if owner of account visits, sets message unread to 1 (read)
 def profile(request, user_id):
     user = User.objects.get(id = user_id)
-    messages = Message.objects.filter(receiver=user)
+    new_messages = Message.objects.filter(read_status = 0)
+    if user.id == request.session['user_id']:
+        for x in range (0, len(new_messages), 1):
+            new_messages[x].read_status = 1
+            new_messages[x].save()
+    messages = Message.objects.filter(receiver=user).order_by("-created_at")
     comments = Comment.objects.filter(recipient=user)
     context = {
         "user" : user,
@@ -254,3 +264,13 @@ def signin_user(request):
     if user.admin_level == "superadmin" or user.admin_level =="admin":
         return redirect('/dashboard/admin')
     return redirect('/dashboard')
+
+def unread_messages(request):
+    user = User.objects.get(id = request.session['user_id'])
+    new_messages = Message.objects.filter(read_status = 0)
+    total_unread = Message.objects.filter(receiver = user).filter(read_status = 0).annotate(count=Count('read_status'))
+    context = {
+        "new_messages" : new_messages,
+        "total_unread" : total_unread
+    }
+    return render(request, "UserDashboard/unread_messages.html", context)

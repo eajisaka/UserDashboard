@@ -21,6 +21,9 @@
             <li class='nav-item'>
                     <a class='nav-link' href="/profile/{{request.session.user_id}}">Profile</a>
             </li>
+            <li class='nav-item'>
+                    <a class='nav-link' href="/unread">Unread Messages: {{total_unread.count}}</a>
+            </li>
             <li class='mr-5 nav-item ml-auto'>
                 <a class='nav-link' href="/logout">Log Out</a>
             </li>
@@ -73,6 +76,16 @@
                 {% endfor %}
             </tbody>
         </table>
+        <h4 class ='mt-5'>Most Recent Messages</h4>
+        {% for message in user_messages %}
+        <div class='card mt-3 border border-dark'>
+            <div class ='card-body'>
+                <h5 class='card-title'><a href='/profile/{{message.sender.id}}'>{{message.sender.first_name}} {{message.sender.last_name}}</a> messaged:</h5>
+                <h6 class='card-subtitle mb-2 text-muted'>{{message.created_at}}</h6>
+                <p class='card-text'>{{message.message}}</p>
+            </div>
+        </div>
+        {% endfor %}
     </div>
 </body>
 </html>
