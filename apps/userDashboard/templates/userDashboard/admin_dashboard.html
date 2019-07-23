@@ -78,7 +78,7 @@
         </table>
         <h4 class ='mt-5'>Most Recent Messages</h4>
         {% for message in user_messages %}
-        <div class='card mt-3 border border-dark'>
+        <div class='card mt-3 border border-dark col-lg-6'>
             <div class ='card-body'>
                 <h5 class='card-title'><a href='/profile/{{message.sender.id}}'>{{message.sender.first_name}} {{message.sender.last_name}}</a> messaged:</h5>
                 <h6 class='card-subtitle mb-2 text-muted'>{{message.created_at}}</h6>

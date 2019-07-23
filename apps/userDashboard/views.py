@@ -120,6 +120,20 @@ def dashboard(request):
     }
     return render(request, "userDashboard/dashboard.html", context)
 
+#Deletes comment from database
+def delete_comment(request, comment_id, user_id):
+    delete_comment = Comment.object.get(id=comment_id)
+    delete_comment.delete()
+    return redirect(f"/profile/{user_id}")
+    
+#Deletes message and related comments from database
+def delete_message(request, message_id, user_id):
+    delete_comments = Comment.objects.filter(the_message=message_id)
+    delete_comments.delete()
+    delete_message = Message.objects.get(id=message_id)
+    delete_message.delete()
+    return redirect(f"/profile/{user_id}")
+
 #Allows admin to delete/remove users. Admin can only remove admin_levels lower than them, but no one can delete the original superadmin
 def delete_user(request, user_id):
     if request.session['user_id'] == None:
@@ -205,6 +219,7 @@ def message(request, user_id):
 #Renders profile page for each userid given, showing their messages and comments to those messages, if owner of account visits, sets message unread to 1 (read)
 def profile(request, user_id):
     user = User.objects.get(id = user_id)
+    curr_user = User.objects.get(id = request.session['user_id'])
     new_messages = Message.objects.filter(read_status = 0)
     if user.id == request.session['user_id']:
         for x in range (0, len(new_messages), 1):
@@ -213,6 +228,7 @@ def profile(request, user_id):
     messages = Message.objects.filter(receiver=user).order_by("-created_at")
     comments = Comment.objects.filter(recipient=user)
     context = {
+        "curr_user" : curr_user,
         "user" : user,
         "user_messages" : messages,
         "comments" : comments

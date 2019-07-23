@@ -79,6 +79,9 @@
                     <h5 class='card-title'><a href='/profile/{{message.sender.id}}'>{{message.sender.first_name}} {{message.sender.last_name}}</a> messaged:</h5>
                     <h6 class='card-subtitle mb-2 text-muted'>{{message.created_at}}</h6>
                     <p class='card-text'>{{message.message}}</p>
+                    {% if message.receiver.id == request.session.user_id or curr_user.admin_level == "admin" or curr_user.admin_level == "superadmin" %}
+                    <a class ='btn btn-danger border border-dark' href='/delete_message/{{message.id}}/{{user.id}}'>Delete</a>
+                    {% endif %}
                 </div>
             </div>
             {% for comment in comments %}
@@ -88,6 +91,9 @@
                     <h5 class='card-title'><a href='/profile/{{comment.commenter.id}}'>{{comment.commenter.first_name}} {{comment.commenter.last_name}}</a> commented:</h5>
                     <h6 class='card-subtitle mb-2 text-muted'>{{comment.created_at}}</h6>
                     <p class='card-text'>{{comment.comment}}</p>
+                    {% if comment.recipient.id == request.session.user_id or comment.commenter.id == request.session.user_id or curr_user.admin_level == "admin" or curr_user.admin_level == "superadmin" %}
+                    <a class ='btn btn-danger border border-dark' href='/delete_comment/{{comment.id}}/{{user.id}}'>Delete</a>
+                    {% endif %}
                 </div>
             </div>
             {% endif %}

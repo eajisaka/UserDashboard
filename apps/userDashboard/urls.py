@@ -11,6 +11,8 @@ urlpatterns = [
     url(r'^dashboard$', views.dashboard),
     url(r'^dashboard/admin$', views.admin_dashboard),
     url(r'^delete/(?P<user_id>\d+)$', views.delete_user),
+    url(r'^delete_comment/(?P<comment_id>\d+)/(?P<user_id>\d+)$', views.delete_comment),
+    url(r'^delete_message/(?P<message_id>\d+)/(?P<user_id>\d+)$', views.delete_message),
     url(r'^edit$', views.edit),
     url(r'^edit_description', views.edit_description),
     url(r'^edit_password$', views.edit_password),
