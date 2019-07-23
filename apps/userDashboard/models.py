@@ -4,23 +4,7 @@ import re
 EMAIL_REGEX = re.compile(r'^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$')
 
 class UserManager(models.Manager):
-    def validator_registration(self, postData):
-        errors = {}
-        if not EMAIL_REGEX.match(postData['register_email']):
-            errors['email'] = "Must enter an email address"
-        check_email = User.objects.filter(email=postData['register_email'])
-        if len(check_email) > 0:
-            errors['email'] = "Email already taken"
-        if len(postData['register_first_name']) < 2:
-            errors['first'] = "First name must be two characters"
-        if len(postData['register_last_name']) < 2:
-            errors['last'] = "Last name must be two characters"
-        if len(postData['register_pass1']) < 8:
-            errors['pass1'] = "Password must be at least 8 characters"
-        if postData['register_pass1'] != postData['register_pass2']:
-            errors['pass2'] = "Passwords must match"
-        return errors
-
+    #Verifies email and password for login, doesn't tell user what fails upon unsuccessful login
     def validator_login(self, postData):
         errors = {}
         if not EMAIL_REGEX.match(postData['sign_in_email']):
@@ -35,7 +19,21 @@ class UserManager(models.Manager):
             return errors
         errors['login'] = "Unable to log you in "
         return errors
-            
+
+    #Verifies password from the edit form as well as verifies previous password to make sure password change was intended
+    def validator_password(self,postData):
+        errors = {}
+        if len(postData['edit_pass1']) < 8:
+            errors['pass1'] = "Password must be at least 8 characters"
+        if postData['edit_pass1'] != postData['edit_pass2']:
+            errors['pass2'] = "Passwords must match"
+        user = User.objects.get(id=postData['edit_id'])
+        if bcrypt.checkpw(postData['edit_prev_pass'].encode(), user.pw_hash.encode()):
+            return errors
+        errors['prev_pass'] = "Your previous password doesn't match"
+        return errors
+
+        #Checks that profile edit doesn't leave blank areas or change email to something already taken        
     def validator_profile(self, postData):
         errors = {}
         if len(postData['edit_first_name']) < 2:
@@ -51,16 +49,22 @@ class UserManager(models.Manager):
                 errors['email'] = "Email already taken"
         return errors
 
-    def validator_password(self,postData):
+    #Checks registration, makes sure email is unique for each user for their login
+    def validator_registration(self, postData):
         errors = {}
-        if len(postData['edit_pass1']) < 8:
+        if not EMAIL_REGEX.match(postData['register_email']):
+            errors['email'] = "Must enter an email address"
+        check_email = User.objects.filter(email=postData['register_email'])
+        if len(check_email) > 0:
+            errors['email'] = "Email already taken"
+        if len(postData['register_first_name']) < 2:
+            errors['first'] = "First name must be two characters"
+        if len(postData['register_last_name']) < 2:
+            errors['last'] = "Last name must be two characters"
+        if len(postData['register_pass1']) < 8:
             errors['pass1'] = "Password must be at least 8 characters"
-        if postData['edit_pass1'] != postData['edit_pass2']:
+        if postData['register_pass1'] != postData['register_pass2']:
             errors['pass2'] = "Passwords must match"
-        user = User.objects.get(id=postData['edit_id'])
-        if bcrypt.checkpw(postData['edit_prev_pass'].encode(), user.pw_hash.encode()):
-            return errors
-        errors['prev_pass'] = "Your previous password doesn't match"
         return errors
 
     def validator_change_password(self,postData):
