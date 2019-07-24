@@ -40,7 +40,7 @@
             {% endif %}
             {% endfor %}
             {% endif %}
-            <a class='btn btn-info ml-auto border border-dark' href='/add_new'>Add New</a>
+            <a class='btn btn-primary ml-auto border border-dark' href='/add_new'>Add New</a>
         </div>
         <table class="table table-hover mt-4">
             <thead class=''>
@@ -70,22 +70,38 @@
                         data-trigger="focus" 
                         title="Are you sure?"
                         data-html="true"
-                        data-content="<a class='py-1 btn btn-danger border border-dark' href='/delete/{{user.id}}'>Remove</a><a class='py-1 ml-3 btn btn-secondary border border-dark' href=''>Cancel</a>">Remove</a>
+                        data-content="<a class='py-1 btn btn-danger border border-dark' href='/delete/{{user.id}}'>Remove</a><a class='py-1 ml-3 btn btn-primary border border-dark' href=''>Cancel</a>">Remove</a>
                     </td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
+        <div class ='row'>
+            <div class='left-column col-lg-6'>
         <h4 class ='mt-5'>Most Recent Messages</h4>
         {% for message in user_messages %}
-        <div class='card mt-3 border border-dark col-lg-6'>
-            <div class ='card-body'>
-                <h5 class='card-title'><a href='/profile/{{message.sender.id}}'>{{message.sender.first_name}} {{message.sender.last_name}}</a> messaged:</h5>
-                <h6 class='card-subtitle mb-2 text-muted'>{{message.created_at}}</h6>
-                <p class='card-text'>{{message.message}}</p>
+            <div class='card mt-3 border border-dark'>
+                <div class ='card-body'>
+                    <h5 class='card-title'><a href='/profile/{{message.sender.id}}'>{{message.sender.first_name}} {{message.sender.last_name}}</a> messaged:</h5>
+                    <h6 class='card-subtitle mb-2 text-muted'>{{message.created_at}}</h6>
+                    <p class='card-text'>{{message.message}}</p>
+                </div>
+            </div>
+        {% endfor %}
+            </div>
+            <div class='col-lg-6 right-column'>
+                    <h4 class='mt-5'>Friends List</h4>
+                    {% for message in user_messages %}
+                    <div class='card mt-3 border border-dark'>
+                        <div class ='card-body'>
+                            <h5 class='card-title'><a href='/profile/{{message.sender.id}}'>{{message.sender.first_name}} {{message.sender.last_name}}</a> messaged:</h5>
+                            <h6 class='card-subtitle mb-2 text-muted'>{{message.created_at}}</h6>
+                            <p class='card-text'>{{message.message}}</p>
+                        </div>
+                    </div>
+                {% endfor %}
             </div>
         </div>
-        {% endfor %}
     </div>
 </body>
 </html>
