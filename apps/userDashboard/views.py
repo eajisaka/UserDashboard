@@ -119,7 +119,6 @@ def dashboard(request):
         "users" : users
     }
     return render(request, "userDashboard/dashboard.html", context)
-<<<<<<< HEAD
 
 #Deletes comment from database
 def delete_comment(request, comment_id, user_id):
@@ -157,8 +156,10 @@ def delete_user(request, user_id):
 #Renders the edit user page, only the user can edit their page
 def edit(request):
     user = User.objects.get(id = request.session['user_id'])
+    total_unread = Message.objects.filter(receiver = user).filter(read_status = 0).annotate(count=Count('read_status'))
     context = {
-        'user': user
+        'user': user,
+        "total_unread" : total_unread
     }
     return render(request, "userDashboard/edit_profile.html", context)
 
@@ -184,58 +185,6 @@ def edit_password(request):
     messages.success(request, 'Password updated!', extra_tags = 'password')
     return redirect('/edit')
 
-=======
-
-#Allows admin to delete/remove users. Admin can only remove admin_levels lower than them, but no one can delete the original superadmin
-def delete_user(request, user_id):
-    if request.session['user_id'] == None:
-        return redirect('/')
-    curr_user = User.objects.get(id =request.session['user_id'])
-    remove_user = User.objects.get(id = user_id)
-    if remove_user.id == 1 and remove_user.admin_level=="superadmin":
-        messages.error(request, "You can't delete the head honcho superadmin!", extra_tags = "delete_error")
-        return redirect('/dashboard/admin')
-    if curr_user.admin_level != "superadmin":
-        messages.error(request, "You can't delete another admin!", extra_tags = "delete_error")
-        return redirect('/dashboard/admin')
-    if remove_user.admin_level == "superadmin":
-            messages.error(request, "You can't delete another superadmin!", extra_tags = "delete_error")
-            return redirect('/dashboard/admin')
-        
-    remove_user.delete()
-    return redirect('/dashboard/admin')
-
-#Renders the edit user page, only the user can edit their page
-def edit(request):
-    user = User.objects.get(id = request.session['user_id'])
-    context = {
-        'user': user
-    }
-    return render(request, "userDashboard/edit_profile.html", context)
-
-#Allows user to change their description on their profile
-def edit_description(request):
-    user_update = User.objects.get(id = request.session['user_id'])
-    user_update.description = request.POST['edit_description']
-    user_update.save()
-    messages.success(request, 'Description updated!', extra_tags = 'description')
-    return redirect('/edit')
-
-#Handles the edit passford form on the edit page, makes sure passwords match before updating
-def edit_password(request):
-    errors = User.objects.validator_password(request.POST)
-    if len(errors) > 0:
-        for key, value in errors.items():
-            messages.error(request, value, extra_tags = key)
-        return redirect('/edit')
-    hash1 = bcrypt.hashpw(request.POST['edit_pass1'].encode(), bcrypt.gensalt())
-    user_update = User.objects.get(id=request.POST['edit_id'])
-    user_update.pw_hash = hash1
-    user_update.save()
-    messages.success(request, 'Password updated!', extra_tags = 'password')
-    return redirect('/edit')
-
->>>>>>> 64bacc23d2ffd640afc865dd5da722f3033790a1
 #Verifies use input to edit their profile, making sure email is unique. 
 def edit_user(request):
     errors = User.objects.validator_profile(request.POST)
@@ -261,7 +210,6 @@ def logout(request):
     request.session['user_id'] = None
     return redirect('/')
 
-<<<<<<< HEAD
 #Sends new message to user in profile, sent read_status to 0 (unread)
 def message(request, user_id):
     receiver = User.objects.get(id = user_id)
@@ -283,22 +231,6 @@ def profile(request, user_id):
     comments = Comment.objects.filter(recipient=user)
     context = {
         "curr_user" : curr_user,
-=======
-#Sends new message to user in profile
-def message(request, user_id):
-    receiver = User.objects.get(id = user_id)
-    sender = User.objects.get(id = request.session['user_id'])
-    new_message = Message.objects.create(message=request.POST['message_description'], sender = sender, receiver = receiver)
-    messages.success(request, 'Message posted', extra_tags = 'add_message')
-    return redirect (f'/profile/{user_id}')
-
-#Renders profile page for each userid given, showing their messages and comments to those messages
-def profile(request, user_id):
-    user = User.objects.get(id = user_id)
-    messages = Message.objects.filter(receiver=user)
-    comments = Comment.objects.filter(recipient=user)
-    context = {
->>>>>>> 64bacc23d2ffd640afc865dd5da722f3033790a1
         "user" : user,
         "user_messages" : messages,
         "comments" : comments
@@ -350,7 +282,6 @@ def signin_user(request):
     if user.admin_level == "superadmin" or user.admin_level =="admin":
         return redirect('/dashboard/admin')
     return redirect('/dashboard')
-<<<<<<< HEAD
 
 def unread_messages(request):
     user = User.objects.get(id = request.session['user_id'])
@@ -361,5 +292,3 @@ def unread_messages(request):
         "total_unread" : total_unread
     }
     return render(request, "UserDashboard/unread_messages.html", context)
-=======
->>>>>>> 64bacc23d2ffd640afc865dd5da722f3033790a1
