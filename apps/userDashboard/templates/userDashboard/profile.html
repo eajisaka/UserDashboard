@@ -36,6 +36,12 @@
                     <a class='nav-link' href="/profile/{{request.session.user_id}}">Profile</a>
                 </li>
             {% endif %}
+            <li class='nav-item'>
+                    <a class='nav-link' href="/unread">Unread Messages: {{total_unread.count}}</a>
+                </li>
+            <li class='nav-item'>
+                <a class='nav-link' href="/friend_requests">Friend Requests: {{friend_requests.count}}</a>
+            </li>
             <li class='mr-5 nav-item ml-auto'>
                 <a class='nav-link' href="/logout">Log Out</a>
             </li>
@@ -44,7 +50,21 @@
     </div>
     <div class='container'>
         <div class='profile text-left'>
+            <div class='row'>
             <h4 class='mt-3'>{{user.first_name}} {{user.last_name}}</h4>
+            {% if messages %}
+            {% for message in messages %}
+            {% if message.tags == "add_friend success" %}
+                <p class='ml-3 text-success p-0'>{{message}}</p>
+            {% endif %}
+            {% endfor %}
+            {% endif %}
+            </div>
+            {% if curr_user_requests|length > 0 %}
+            {% elif curr_user_request_by|length > 0 %}
+            {% elif user.id != request.session.user_id %}
+            <a class='btn btn-primary border border-dark' href='/add_friend/{{user.id}}'>Add Friend</a>
+            {% endif %}
             <div class='row'>
                 <div class='labels col-lg-2 mt-2'>
                     <p>Registered at: </p>

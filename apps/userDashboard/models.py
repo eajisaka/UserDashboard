@@ -108,3 +108,16 @@ class Comment(models.Model):
     updated_at = models.DateTimeField(auto_now = True)
     def __repr__(self):
         return(f"Comment object: {self.id} {self.comment} {self.commenter.first_name} {self.the_message}")
+
+class Friend(models.Model):
+    friend_requester = models.ForeignKey(User, related_name = "invited_by", null=True)
+    request_to = models.ForeignKey(User, related_name = "invited_to", null=True)
+    friends = models.ManyToManyField(User, related_name = "friends_with")
+    #0 = pending, 1 = accepted
+    acceptance = models.IntegerField(null=True)
+    #0 = pending, 1 = rejected
+    rejected = models.IntegerField(null=True)
+    created_at = models.DateTimeField(auto_now_add = True)
+    updated_at = models.DateTimeField(auto_now = True)
+    def __repr__(self):
+        return(f"Friend object: {self.id} {self.friend_requester} {self.request_to} {self.friends}")

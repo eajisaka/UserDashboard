@@ -3,6 +3,8 @@ from . import views
 
 urlpatterns = [
     url(r'^$', views.home),
+    url(r'^accept/(?P<friend_id>\d+)$', views.accept),
+    url(r'^add_friend/(?P<user_id>\d+)$', views.add_friend),
     url(r'^add_new$', views.add_new),
     url(r'^add_user$', views.add_user),
     url(r'^admin_edit_password/(?P<user_id>\d+)$', views.admin_edit_password),
@@ -18,11 +20,14 @@ urlpatterns = [
     url(r'^edit_password$', views.edit_password),
     url(r'^edit/profile/(?P<user_id>\d+)$', views.admin_edit_profile),
     url(r'^edit_user$', views.edit_user),
+    url(r'^friend_requests$', views.friend_requests),
     url(r'^logout', views.logout),
     url(r'^message/(?P<user_id>\d+)$', views.message),
     url(r'^profile/(?P<user_id>\d+)$', views.profile),
     url(r'^registration$', views.register),
     url(r'^register_user$', views.register_user),
+    url(r'^reject/(?P<friend_id>\d+)$', views.reject),
+    url(r'^remove_friend/(?P<friend_id>\d+)$', views.remove_friend),
     url(r'^signin$', views.signin),
     url(r'^signin_user$', views.signin_user),
     url(r'^unread$', views.unread_messages),

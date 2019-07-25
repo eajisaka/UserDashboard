@@ -1,8 +1,27 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.db.models import Count, Sum
-from .models import User, UserManager, Message, Comment
+from .models import User, UserManager, Message, Comment, Friend
 import bcrypt
+
+def accept(request, friend_id):
+    friend_request = Friend.objects.get(id=friend_id)
+    friend_requester = friend_request.friend_requester
+    friend_request_to = friend_request.request_to
+    friend_request.acceptance = 1
+    friend_request.save()
+    friend_request_to.friends_with.add(friend_request)
+    friend_requester.friends_with.add(friend_request)
+    messages.success(request, 'Friend request accepted!', extra_tags="accept_request")
+
+    return redirect('/friend_requests')
+
+def add_friend(request, user_id):
+    friend_requester = User.objects.get(id=request.session['user_id'])
+    request_to = User.objects.get(id=user_id)
+    friend_request = Friend.objects.create(friend_requester=friend_requester, request_to=request_to, acceptance=0, rejected=0)
+    messages.success(request, 'Friend request sent!', extra_tags='add_friend')
+    return redirect(f'/profile/{user_id}')
 
 #Renders the add new user page
 def add_new(request):
@@ -29,11 +48,15 @@ def admin_dashboard(request):
         users = User.objects.all()
         user_messages = Message.objects.filter(receiver = user).order_by('-created_at')[:3]
         total_unread = Message.objects.filter(receiver = user).filter(read_status = 0).annotate(count=Count('read_status'))
+        all_friends = user.friends_with.all()
+        friend_requests = Friend.objects.filter(request_to = user).filter(acceptance = 0).annotate(count=Count('acceptance'))
         context = {
         "users" : users,
         "user" : user,
         "user_messages" : user_messages,
-        "total_unread" : total_unread
+        "total_unread" : total_unread,
+        "all_friends" : all_friends,
+        "friend_requests" : friend_requests
         }
         return render(request, "userDashboard/admin_dashboard.html", context)
     return redirect('/dashboard')
@@ -114,9 +137,19 @@ def comment(request, user_id, message_id):
 def dashboard(request):
     if request.session['user_id'] == None:
         return redirect('/')
+    user = User.objects.get(id=request.session['user_id'])
     users = User.objects.all()
+    user_messages = Message.objects.filter(receiver = user).order_by('-created_at')[:3]
+    friend_requests = Friend.objects.filter(request_to = user).filter(acceptance = 0).annotate(count=Count('acceptance'))
+    total_unread = Message.objects.filter(receiver = user).filter(read_status = 0).annotate(count=Count('read_status'))
+    all_friends = user.friends_with.all()
     context = {
-        "users" : users
+        "user" : user,
+        "users" : users,
+        "total_unread" : total_unread,
+        "user_messages" : user_messages,
+        "all_friends" : all_friends,
+        "friend_requests" : friend_requests
     }
     return render(request, "userDashboard/dashboard.html", context)
 
@@ -157,8 +190,10 @@ def delete_user(request, user_id):
 def edit(request):
     user = User.objects.get(id = request.session['user_id'])
     total_unread = Message.objects.filter(receiver = user).filter(read_status = 0).annotate(count=Count('read_status'))
+    friend_requests = Friend.objects.filter(request_to = user).filter(acceptance = 0).annotate(count=Count('acceptance'))
     context = {
         'user': user,
+        "friend_requests": friend_requests,
         "total_unread" : total_unread
     }
     return render(request, "userDashboard/edit_profile.html", context)
@@ -200,6 +235,17 @@ def edit_user(request):
     messages.success(request, 'Profile updated!', extra_tags = "profile")
     return redirect('/edit')
 
+#Renders friend request page
+def friend_requests(request):
+    user = User.objects.get(id=request.session['user_id'])
+    friend_requests = Friend.objects.filter(request_to = user).filter(acceptance = 0).annotate(count=Count('acceptance'))
+    total_unread = Message.objects.filter(receiver = user).filter(read_status = 0).annotate(count=Count('read_status'))
+    context = {
+        "friend_requests" : friend_requests,
+        "total_unread" : total_unread
+    }
+    return render(request, "userDashboard/friend_requests.html", context)
+
 #Renders homepage
 def home(request):
     return render(request, "userDashboard/home_page.html")
@@ -223,6 +269,10 @@ def profile(request, user_id):
     user = User.objects.get(id = user_id)
     curr_user = User.objects.get(id = request.session['user_id'])
     new_messages = Message.objects.filter(read_status = 0)
+    curr_user_requests = Friend.objects.filter(friend_requester = curr_user).filter(request_to=user)
+    curr_user_request_by = Friend.objects.filter(friend_requester = user).filter(request_to = curr_user)
+    total_unread = Message.objects.filter(receiver = user).filter(read_status = 0).annotate(count=Count('read_status'))
+    friend_requests = Friend.objects.filter(request_to = user).filter(acceptance = 0).annotate(count=Count('acceptance'))
     if user.id == request.session['user_id']:
         for x in range (0, len(new_messages), 1):
             new_messages[x].read_status = 1
@@ -233,7 +283,11 @@ def profile(request, user_id):
         "curr_user" : curr_user,
         "user" : user,
         "user_messages" : messages,
-        "comments" : comments
+        "friend_requests":friend_requests,
+        "comments" : comments,
+        "total_unread" : total_unread,
+        "curr_user_requests" : curr_user_requests,
+        "curr_user_request_by" : curr_user_request_by
     }
     return render(request, "userDashboard/profile.html", context)
 
@@ -265,6 +319,24 @@ def register_user(request):
         request.session['user_id'] = new_user.id
         return redirect('/dashboard')
 
+#Rejects friend request and deletes the object from the database
+def reject(request, friend_id):
+    friend_request = Friend.objects.get(id=friend_id)
+    friend_request.delete()
+    messages.error(request, "Declined friend invite", extra_tags = 'reject_request')
+    return redirect('/friend_requests')
+
+#Removes friend from friends list
+def remove_friend(request, friend_id):
+    friend_delete = Friend.objects.get(id=friend_id)
+    friend_requester = friend_delete.friend_requester
+    request_to = friend_delete.request_to
+    request_to.friends_with.remove(friend_delete)
+    friend_requester.friends_with.remove(friend_delete)
+    friend_delete.delete()
+    messages.success(request, "Friend removed", extra_tags = 'friend_remove')
+    return redirect('/dashboard/admin')
+
 #Renders signin form
 def signin(request):
     return render(request, "userDashboard/sign_in.html")
@@ -283,11 +355,13 @@ def signin_user(request):
         return redirect('/dashboard/admin')
     return redirect('/dashboard')
 
+#Displays unread messages
 def unread_messages(request):
     user = User.objects.get(id = request.session['user_id'])
     new_messages = Message.objects.filter(read_status = 0)
     total_unread = Message.objects.filter(receiver = user).filter(read_status = 0).annotate(count=Count('read_status'))
     context = {
+        "user" : user,
         "new_messages" : new_messages,
         "total_unread" : total_unread
     }

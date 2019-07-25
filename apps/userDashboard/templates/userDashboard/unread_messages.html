@@ -10,7 +10,7 @@
             <li class='ml- nav-item'>
                 <p class='mt-2 ml-5 mr-3 font-weight-bold'>Messenger</p>
             </li>
-            {% if request.session.admin_level == "normal" %}
+            {% if user.admin_level == "normal" %}
                 <li class='nav-item'>
                     <a class='nav-link' href="/dashboard">Dashboard</a>
                 </li>
@@ -19,18 +19,12 @@
                     <a class='nav-link' href="/dashboard/admin">Dashboard</a>
                 </li>
             {% endif %}
-            {% if user.id == request.session.user_id %}
-                <li class='nav-item'>
-                    <a class='nav-link' href="/profile/{{request.session.user_id}}"><b>Profile</b></a>
-                </li>
-                <li class='nav-item'>
-                    <a class='nav-link' href="/edit">Edit Profile</a>
-                </li>
-            {% else %}
                 <li class='nav-item'>
                     <a class='nav-link' href="/profile/{{request.session.user_id}}">Profile</a>
                 </li>
-            {% endif %}
+                <li class='nav-item'>
+                    <a class='nav-link' href="/unread"><b>Unread Messages: {{total_unread.count}}</b></a>
+                </li>
             <li class='mr-5 nav-item ml-auto'>
                 <a class='nav-link' href="/logout">Log Out</a>
             </li>
