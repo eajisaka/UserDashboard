@@ -8,7 +8,7 @@
     <div class='top'>
         <ul class='nav'>
             <li class='ml- nav-item'>
-                <p class='mt-2 ml-5 mr-3 font-weight-bold'>Messenger</p>
+                <p class='mt-2 ml-5 mr-3 font-weight-bold'>ConnectUs</p>
             </li>
             {% if user.admin_level == "normal" %}
                 <li class='nav-item'>
@@ -24,6 +24,9 @@
                 </li>
                 <li class='nav-item'>
                     <a class='nav-link' href="/unread"><b>Unread Messages: {{total_unread.count}}</b></a>
+                </li>
+                <li class='nav-item'>
+                    <a class='nav-link' href="/friend_requests">Friend Requests: {{friend_requests.count}}</a>
                 </li>
             <li class='mr-5 nav-item ml-auto'>
                 <a class='nav-link' href="/logout">Log Out</a>
@@ -44,6 +47,9 @@
             </div>
         </div>
         {% endfor %}
+        <div class='bottom pt-3 pb-3 border-top text-left mt-5'>
+            <p>©ConnectUs Inc. · <a href=''>Privacy</a> · <a href=''>Terms</a></p>
+        </div> 
     </div>
 </body>
 </html>

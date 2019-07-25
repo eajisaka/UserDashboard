@@ -8,12 +8,24 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     <script src="{% static 'userDashboard/js/admin_dashboard.js' %}"></script>
+    <style>
+            .top{
+                background-color: blue;
+            }
+            .top a{
+                color: white;
+            }
+            .top p {
+                color:white;
+                font-size: 1.8rem;
+            }
+        </style>
 </head>
 <body>
     <div class='top'>
         <ul class='nav'>
             <li class='nav-item'>
-                <p class='mt-2 ml-5 mr-3 font-weight-bold'>Messenger</p>
+                <p class='mt-2 ml-5 mr-3 font-weight-bold'>ConnectUs</p>
             </li>
             <li class='nav-item'>
                 <a class='nav-link' href="/dashboard/admin"><b>Dashboard</b></a>
@@ -94,14 +106,16 @@
             </div>
             <div class='col-lg-6 right-column'>
                     <h4 class='mt-5'>Friends List</h4>
-                    {% if messages %}
-                    {% for message in messages %}
-                    {% if message.tags == "friend_remove success" %}
-                        <p class='mr-3 my-auto text-success p-0'>{{message}}</p>
-                    {% endif %}
-                    {% endfor %}
-                    {% endif %}
                     {% for friend in all_friends %}
+                    {% if friend.request_to.id != user.id %}
+                    <div class='card mt-3 border border-dark'>
+                        <div class ='card-body'>
+                            <h5 class='card-title'><a href='/profile/{{friend.request_to.id}}'>{{friend.request_to.first_name}} {{friend.request_to.last_name}}</a> </h5>
+                            <h6 class='card-subtitle mb-2 text-muted'>Friends since: {{friend.created_at}}</h6>
+                            <a class='mt-3 text-danger' href='/remove_friend/{{friend.id}}'>Remove</a>
+                        </div>
+                    </div>
+                    {% else %}
                     <div class='card mt-3 border border-dark'>
                         <div class ='card-body'>
                             <h5 class='card-title'><a href='/profile/{{friend.friend_requester.id}}'>{{friend.friend_requester.first_name}} {{friend.friend_requester.last_name}}</a> </h5>
@@ -109,9 +123,13 @@
                             <a class='mt-3 text-danger' href='/remove_friend/{{friend.id}}'>Remove</a>
                         </div>
                     </div>
-                {% endfor %}
+                    {% endif %}
+                    {% endfor %}
             </div>
         </div>
+        <div class='bottom pt-3 pb-3 border-top mt-5'>
+            <p>©ConnectUs Inc. · <a href=''>Privacy</a> · <a href=''>Terms</a></p>
+        </div> 
     </div>
 </body>
 </html>

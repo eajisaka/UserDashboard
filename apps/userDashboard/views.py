@@ -271,8 +271,8 @@ def profile(request, user_id):
     new_messages = Message.objects.filter(read_status = 0)
     curr_user_requests = Friend.objects.filter(friend_requester = curr_user).filter(request_to=user)
     curr_user_request_by = Friend.objects.filter(friend_requester = user).filter(request_to = curr_user)
-    total_unread = Message.objects.filter(receiver = user).filter(read_status = 0).annotate(count=Count('read_status'))
-    friend_requests = Friend.objects.filter(request_to = user).filter(acceptance = 0).annotate(count=Count('acceptance'))
+    total_unread = Message.objects.filter(receiver = curr_user).filter(read_status = 0).annotate(count=Count('read_status'))
+    friend_requests = Friend.objects.filter(request_to = curr_user).filter(acceptance = 0).annotate(count=Count('acceptance'))
     if user.id == request.session['user_id']:
         for x in range (0, len(new_messages), 1):
             new_messages[x].read_status = 1
@@ -360,9 +360,11 @@ def unread_messages(request):
     user = User.objects.get(id = request.session['user_id'])
     new_messages = Message.objects.filter(read_status = 0)
     total_unread = Message.objects.filter(receiver = user).filter(read_status = 0).annotate(count=Count('read_status'))
+    friend_requests = Friend.objects.filter(request_to = user).filter(acceptance = 0).annotate(count=Count('acceptance'))
     context = {
         "user" : user,
         "new_messages" : new_messages,
-        "total_unread" : total_unread
+        "total_unread" : total_unread,
+        "friend_requests" : friend_requests
     }
     return render(request, "UserDashboard/unread_messages.html", context)

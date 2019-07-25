@@ -3,12 +3,17 @@
 <head>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <title>User Dashboard</title>
+        {% load static %}
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script src="{% static 'userDashboard/js/admin_dashboard.js' %}"></script>
 </head>
 <body>
     <div class='top'>
         <ul class='nav'>
             <li class='ml- nav-item'>
-                <p class='mt-2 ml-5 mr-3 font-weight-bold'>Messenger</p>
+                <p class='mt-2 ml-5 mr-3 font-weight-bold'>ConnectUs</p>
             </li>
             <li class='nav-item'>
                 <a class='nav-link' href="/dashboard"><b>Dashboard</b></a>
@@ -75,7 +80,14 @@
                     <div class ='card-body'>
                         <h5 class='card-title'><a href='/profile/{{friend.request_to.id}}'>{{friend.request_to.first_name}} {{friend.request_to.last_name}}</a> </h5>
                         <h6 class='card-subtitle mb-2 text-muted'>Friends since: {{friend.created_at}}</h6>
-                        <a class='mt-3 text-danger' href='/remove_friend/{{friend.id}}'>Remove</a>
+                        <a tabindex="0" 
+                        class="popover-dismiss text-danger"
+                        role="button" 
+                        data-toggle="popover"
+                        data-trigger="focus" 
+                        title="Are you sure?"
+                        data-html="true"
+                        data-content="<a class='py-1 btn btn-danger border border-dark' href='/remove_friend/{{friend.id}}'>Remove</a><a class='py-1 ml-3 btn btn-primary border border-dark' href=''>Cancel</a>">Remove</a>
                     </div>
                 </div>
                 {% else %}
@@ -83,13 +95,23 @@
                     <div class ='card-body'>
                         <h5 class='card-title'><a href='/profile/{{friend.friend_requester.id}}'>{{friend.friend_requester.first_name}} {{friend.friend_requester.last_name}}</a> </h5>
                         <h6 class='card-subtitle mb-2 text-muted'>Friends since: {{friend.created_at}}</h6>
-                        <a class='mt-3 text-danger' href='/remove_friend/{{friend.id}}'>Remove</a>
+                        <a tabindex="0" 
+                        class="popover-dismiss text-danger"
+                        role="button" 
+                        data-toggle="popover"
+                        data-trigger="focus" 
+                        title="Are you sure?"
+                        data-html="true"
+                        data-content="<a class='py-1 btn btn-danger border border-dark' href='/remove_friend/{{friend.id}}'>Remove</a><a class='py-1 ml-3 btn btn-primary border border-dark' href=''>Cancel</a>">Remove</a>
                     </div>
                 </div>
                 {% endif %}
                 {% endfor %}
             </div>
         </div>
+        <div class='bottom pt-3 pb-3 border-top mt-5'>
+            <p>©ConnectUs Inc. · <a href=''>Privacy</a> · <a href=''>Terms</a></p>
+        </div> 
     </div>
 </body>
 </html>

@@ -10,7 +10,7 @@
     <div class='top'>
         <ul class='nav'>
             <li class='nav-item'>
-                <p class='mt-2 ml-5 mr-3 font-weight-bold'>Messenger</p>
+                <p class='mt-2 ml-5 mr-3 font-weight-bold'>ConnectUs</p>
             </li>
             <li class='nav-item'>
                 <a class='nav-link' href="/">Home</a>
@@ -22,14 +22,14 @@
         <hr class='m-0'>
     </div>
     <div class='container text-left'>
-        <div class='row'>
+        <div class='row mt-5'>
             <div class='left_side col-lg-6'>
-                <img src="{% static 'userDashboard/images/register_icon.png' %}" id='register_icon'>
+                <img src="{% static 'userDashboard/images/join_us.jpg' %}" id='register_icon'>
             </div>
             <div class='right_side col-lg-6'>
                 <form class='form-register' method="POST" action="/register_user">
                     {% csrf_token %}
-                    <h1 class='text-left text-secondary'>Register</h1>
+                    <h1 class='text-left'>Register</h1>
                     <label for='register_email'>Email Address:</label>
                     {% if messages %}
                     {% for message in messages %}
@@ -78,7 +78,10 @@
                     <button class='btn btn-primary border border-dark' type='submit'>Register</button>
                 </form>
             </div>
-        </div>    
+        </div> 
+        <div class='bottom pt-3 pb-3 border-top mt-5'>
+            <p>©ConnectUs Inc. · <a href=''>Privacy</a> · <a href=''>Terms</a></p>
+        </div>   
     </div>
 </body>
 </html>

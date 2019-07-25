@@ -13,7 +13,7 @@
     <div class='top'>
         <ul class='nav'>
             <li class='ml- nav-item'>
-                <p class='mt-2 ml-5 mr-3 font-weight-bold'>Messenger</p>
+                <p class='mt-2 ml-5 mr-3 font-weight-bold'>ConnectUs</p>
             </li>
             {% if request.session.admin_level == "normal" %}
                 <li class='nav-item'>
@@ -50,20 +50,18 @@
     </div>
     <div class='container'>
         <div class='profile text-left'>
-            <div class='row'>
             <h4 class='mt-3'>{{user.first_name}} {{user.last_name}}</h4>
             {% if messages %}
             {% for message in messages %}
             {% if message.tags == "add_friend success" %}
-                <p class='ml-3 text-success p-0'>{{message}}</p>
+                <p class='ml-3 text-success p-0 my-auto'>{{message}}</p>
             {% endif %}
             {% endfor %}
             {% endif %}
-            </div>
             {% if curr_user_requests|length > 0 %}
             {% elif curr_user_request_by|length > 0 %}
             {% elif user.id != request.session.user_id %}
-            <a class='btn btn-primary border border-dark' href='/add_friend/{{user.id}}'>Add Friend</a>
+            <a href='/add_friend/{{user.id}}'>Add Friend</a>
             {% endif %}
             <div class='row'>
                 <div class='labels col-lg-2 mt-2'>
@@ -145,6 +143,9 @@
                 </div>
             </form>
             {% endfor %}
+            <div class='bottom pt-3 pb-3 border-top mt-5'>
+                <p>©ConnectUs Inc. · <a href=''>Privacy</a> · <a href=''>Terms</a></p>
+            </div>  
         </div>
     </div>
 </body>

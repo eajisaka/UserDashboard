@@ -3,12 +3,14 @@
 <head>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <title>User Dashboard</title>
+    {% load static %}
+    <link rel='stylesheet' href="{% static 'userDashboard/css/friend_requests.css' %}">
 </head>
 <body>
     <div class='top'>
         <ul class='nav'>
             <li class='nav-item'>
-                <p class='mt-2 ml-5 mr-3 font-weight-bold'>Messenger</p>
+                <p class='mt-2 ml-5 mr-3 font-weight-bold'>ConnectUs</p>
             </li>
             <li class='nav-item'>
                 <a class='nav-link' href="/dashboard/admin">Dashboard</a>
@@ -29,33 +31,36 @@
         <hr class='m-0'>
     </div>
     <div class='container'>
-        {% if friend_requests.count > 0 %}
-        <h4 class='mt-5'>Friend Requests</h4>
-        {% else %}
-        <h4 class='mt-5 text-center'>You have no more friend requests!</h4>
-        {% endif %}
         {% if messages %}
         {% for message in messages %}
         {% if message.tags == "accept_request success" %}
-            <p class='mr-3 my-auto text-success p-0'>{{message}}</p>
+            <p class='mr-3 my-auto text-success text-center p-0'>{{message}}</p>
         {% endif %}
         {% endfor %}
         {% endif %}
         {% if messages %}
         {% for message in messages %}
         {% if message.tags == "reject_request error" %}
-            <p class='mr-3 my-auto text-danger p-0'>{{message}}</p>
+            <p class='mr-3 my-auto text-danger text-center p-0'>{{message}}</p>
         {% endif %}
         {% endfor %}
         {% endif %}
+        {% if friend_requests.count > 0 %}
+        <h4 class='mt-5'>Friend Requests</h4>
+        {% else %}
+        <h4 class='mt-5 text-center'>You have no more friend requests!</h4>
+        {% endif %}
         {% for request in friend_requests %}
-        <div class='card mt-3 border border-dark'>
+        <div class='card mt-3 border border-dark col-lg-6'>
             <div class ='card-body'>
-                <h5 class='card-title'><a href='/profile/{{request.friend_requester.id}}'>{{request.friend_requester.first_name}} {{request.friend_requester.last_name}}</a> </h5>
-                <h6 class='card-subtitle mb-2 text-muted'><a class='btn btn-primary border border-dark mr-3' href='/accept/{{request.id}}'>Accept</a><a class='btn btn-danger border border-dark' href ='/reject/{{request.id}}'>Decline</a></h6>
+                <h5 class='card-title'><a href='/profile/{{request.friend_requester.id}}'>{{request.friend_requester.first_name}} {{request.friend_requester.last_name}}</a> wants to be friends! </h5>
+                <h6 class='card-subtitle mb-2 mt-3'><a class='btn btn-primary border border-dark mr-3' href='/accept/{{request.id}}'>Accept</a><a class='btn btn-danger border border-dark' href ='/reject/{{request.id}}'>Decline</a></h6>
             </div>
         </div>
         {% endfor %}
-    </div>
+        <div class='bottom pt-3 pb-3 border-top mt-5'>
+            <p>©ConnectUs Inc. · <a href=''>Privacy</a> · <a href=''>Terms</a></p>
+        </div>  
+    </div> 
 </body>
 </html>

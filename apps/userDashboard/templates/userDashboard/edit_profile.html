@@ -10,7 +10,7 @@
     <div class='top'>
         <ul class='nav'>
             <li class='ml- nav-item'>
-                <p class='mt-2 ml-5 mr-3 font-weight-bold'>Messenger</p>
+                <p class='mt-2 ml-5 mr-3 font-weight-bold'>ConnectUs</p>
             </li>
             {% if user.admin_level == "normal" %}
             <li class='nav-item'>
@@ -81,7 +81,7 @@
                         {% endif %}
                         {% endfor %}
                         {% endif %}
-                        <button type='submit' class='mr-3 mt-2 text-right btn btn-info border border-dark'>Save</button>
+                        <button type='submit' class='mr-3 mt-2 text-right btn btn-primary border border-dark'>Save</button>
                     </div>
                 </form>
             </div>
@@ -125,7 +125,7 @@
                         {% endif %}
                         {% endfor %}
                         {% endif %}
-                        <button type='submit' class='mr-3 mt-2 text-right btn btn-info border border-dark'>Update Password</button>
+                        <button type='submit' class='mr-3 mt-2 text-right btn btn-primary border border-dark'>Update Password</button>
                     </div>
                 </form>
             </div>
@@ -133,7 +133,7 @@
             <form method='POST' action='/edit_description'>
                 {% csrf_token %}
                 <h4 class='mt-4'>Edit Description</h4>
-                <textarea name='edit_description' class='form-control border border-dark'></textarea>
+                <textarea name='edit_description' class='form-control border border-dark'>{{user.description}}</textarea>
                 <div class='row justify-content-end'>
                     {% if messages %}
                     {% for message in messages %}
@@ -142,7 +142,7 @@
                     {% endif %}
                     {% endfor %}
                     {% endif %}
-                    <button type='submit' class='mr-3 mt-2 text-right btn btn-info border border-dark'>Save</button>
+                    <button type='submit' class='mr-3 mt-2 text-right btn btn-primary border border-dark'>Save</button>
                 </div>
             </form>
     </div>
