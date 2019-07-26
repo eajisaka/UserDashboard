@@ -25,7 +25,17 @@ def add_friend(request, user_id):
 
 #Renders the add new user page
 def add_new(request):
-    return render(request, "userDashboard/add_user.html")
+    user = User.objects.get(id=request.session['user_id'])
+    user_messages = Message.objects.filter(receiver = user).order_by('-created_at')[:3]
+    friend_requests = Friend.objects.filter(request_to = user).filter(acceptance = 0).annotate(count=Count('acceptance'))
+    total_unread = Message.objects.filter(receiver = user).filter(read_status = 0).annotate(count=Count('read_status'))
+    context = {
+        "user" : user,
+        "total_unread" : total_unread,
+        "user_messages" : user_messages,
+        "friend_requests" : friend_requests
+    }
+    return render(request, "userDashboard/add_user.html", context)
 
 def add_profile_image(request):
     user_update = User.objects.get(id = request.session['user_id'])
@@ -46,27 +56,22 @@ def add_user(request):
     messages.success(request, 'User added', extra_tags = 'add_user')
     return redirect('/add_new')
 
-#Renders the dashboard for admins, allowing the edit/removal of users
-def admin_dashboard(request):
-    if request.session['user_id'] == None:
-        return redirect('/')
-    user = User.objects.get(id = request.session['user_id'])
-    if user.admin_level == "superadmin" or user.admin_level == "admin": 
-        users = User.objects.all()
-        user_messages = Message.objects.filter(receiver = user).order_by('-created_at')[:3]
-        total_unread = Message.objects.filter(receiver = user).filter(read_status = 0).annotate(count=Count('read_status'))
-        all_friends = user.friends_with.all()
-        friend_requests = Friend.objects.filter(request_to = user).filter(acceptance = 0).annotate(count=Count('acceptance'))
-        context = {
-        "users" : users,
-        "user" : user,
-        "user_messages" : user_messages,
-        "total_unread" : total_unread,
-        "all_friends" : all_friends,
-        "friend_requests" : friend_requests
-        }
-        return render(request, "userDashboard/admin_dashboard.html", context)
-    return redirect('/dashboard')
+def admin_edit_image(request, user_id):
+    curr_user = User.objects.get(id =request.session['user_id'])
+    user_update = User.objects.get(id = user_id)
+    if user_update.admin_level == "superadmin" or user_update.admin_level =="admin":
+        if curr_user.admin_level =="superadmin" and curr_user.id == 1:
+            user_update.img_link = request.POST['edit_profile_image']
+            user_update.save()
+            messages.success(request, 'Image updated!', extra_tags = 'image')
+            return redirect(f'/edit/profile/{user_id}')
+        if curr_user.admin_level != "superadmin" and user_update.id != request.session['user_id']:
+            messages.error(request, "You can't change other admins' pictures!", extra_tags = 'edit_pass_error')
+            return redirect(f'/edit/profile/{user_id}')
+    user_update.img_link = request.POST['edit_profile_image']
+    user_update.save()
+    messages.success(request, 'Image updated!', extra_tags = 'image')
+    return redirect(f'/edit/profile/{user_id}')
 
 #Allows admin to edit passwords of admin_level lower than them. Won't allow the change of users with same admin_level
 def admin_edit_password(request, user_id):
@@ -181,16 +186,16 @@ def delete_user(request, user_id):
     remove_user = User.objects.get(id = user_id)
     if remove_user.id == 1 and remove_user.admin_level=="superadmin":
         messages.error(request, "You can't delete the head honcho superadmin!", extra_tags = "delete_error")
-        return redirect('/dashboard/admin')
+        return redirect('/manage_users')
     if curr_user.admin_level != "superadmin":
         messages.error(request, "You can't delete another admin!", extra_tags = "delete_error")
-        return redirect('/dashboard/admin')
-    if remove_user.admin_level == "superadmin":
+        return redirect('/manage_users')
+    if remove_user.admin_level == "superadmin" and remove_user.id != 1:
             messages.error(request, "You can't delete another superadmin!", extra_tags = "delete_error")
-            return redirect('/dashboard/admin')
+            return redirect('/manage_users')
         
     remove_user.delete()
-    return redirect('/dashboard/admin')
+    return redirect('/manage_users')
 
 #Renders the edit user page, only the user can edit their page
 def edit(request):
@@ -262,6 +267,25 @@ def logout(request):
     request.session['user_id'] = None
     return redirect('/')
 
+def manage_users(request):
+    if request.session['user_id'] == None:
+        return redirect('/')
+    user = User.objects.get(id = request.session['user_id'])
+    if user.admin_level == "superadmin" or user.admin_level == "admin": 
+        users = User.objects.all()
+        user_messages = Message.objects.filter(receiver = user).order_by('-created_at')[:3]
+        total_unread = Message.objects.filter(receiver = user).filter(read_status = 0).annotate(count=Count('read_status'))
+        friend_requests = Friend.objects.filter(request_to = user).filter(acceptance = 0).annotate(count=Count('acceptance'))
+        context = {
+        "users" : users,
+        "user" : user,
+        "user_messages" : user_messages,
+        "total_unread" : total_unread,
+        "friend_requests" : friend_requests
+        }
+        return render(request, "userDashboard/manage_users.html", context)
+    return redirect('/dashboard')
+
 #Sends new message to user in profile, sent read_status to 0 (unread)
 def message(request, user_id):
     receiver = User.objects.get(id = user_id)
@@ -285,7 +309,6 @@ def profile(request, user_id):
             new_messages[x].save()
     messages = Message.objects.filter(receiver=user).order_by("-created_at")
     comments = Comment.objects.filter(recipient=user)
-    print(f'***********************{user.img_link}')
     context = {
         "curr_user" : curr_user,
         "user" : user,
@@ -297,6 +320,9 @@ def profile(request, user_id):
         "curr_user_request_by" : curr_user_request_by
     }
     return render(request, "userDashboard/profile.html", context)
+
+def query_search(request):
+    return redirect('/search_results')
 
 #Renders register page
 def register(request):
@@ -319,12 +345,8 @@ def register_user(request):
     hash1 = bcrypt.hashpw(request.POST['register_pass1'].encode(), bcrypt.gensalt())
     request.session['loggedin'] = True
     new_user = User.objects.create(email = request.POST['register_email'], first_name = request.POST['register_first_name'], last_name = request.POST['register_last_name'], pw_hash = hash1, admin_level = admin_level)
-    if new_user.admin_level == "superadmin":
-        request.session['user_id'] = new_user.id
-        return redirect('/dashboard/admin')
-    else:
-        request.session['user_id'] = new_user.id
-        return redirect('/dashboard')
+    request.session['user_id'] = new_user.id
+    return redirect('/dashboard')
 
 #Rejects friend request and deletes the object from the database
 def reject(request, friend_id):
@@ -342,7 +364,47 @@ def remove_friend(request, friend_id):
     friend_requester.friends_with.remove(friend_delete)
     friend_delete.delete()
     messages.success(request, "Friend removed", extra_tags = 'friend_remove')
-    return redirect('/dashboard/admin')
+    return redirect('/dashboard')
+
+def search_results(request):
+    user = User.objects.get(id=request.session['user_id'])
+    user_messages = Message.objects.filter(receiver = user).order_by('-created_at')[:3]
+    friend_requests = Friend.objects.filter(request_to = user).filter(acceptance = 0).annotate(count=Count('acceptance'))
+    total_unread = Message.objects.filter(receiver = user).filter(read_status = 0).annotate(count=Count('read_status'))
+    
+    search1 = None
+    search2 = None
+    search3 = None
+    search_input = request.GET['search_name']
+    if search_input == "" or search_input == " " or search_input == "   ":
+        search3 = "Invalid search type!"
+    search_type = User.objects.is_email(request.GET)
+    if search_type == True:
+        search3 = User.objects.filter(email=search_input)
+    else:
+        search_query = search_input.split()
+        if len(search_query) > 2:
+            search3 = "Invalid search type!"
+        else:
+            if len(search_query) == 0:
+                search3 = "You didn't search for anything!"
+            elif len(search_query) == 1:
+                search1 = User.objects.filter(first_name=search_query[0])
+                search2 = User.objects.filter(last_name=search_query[0])
+            else:
+                search1 = User.objects.filter(first_name=search_query[0], last_name=search_query[1])
+                search2 = User.objects.filter(first_name=search_query[1], last_name=search_query[0])
+
+    context = {
+        "user" : user,
+        "total_unread" : total_unread,
+        "user_messages" : user_messages,
+        "friend_requests" : friend_requests,
+        "search3" : search3,
+        "search1" : search1,
+        "search2" : search2,
+    }
+    return render(request, "userDashboard/search_results.html", context)
 
 #Renders signin form
 def signin(request):
@@ -358,8 +420,7 @@ def signin_user(request):
     request.session['loggedin'] = True
     user = User.objects.get(email=request.POST['sign_in_email'])
     request.session['user_id'] = user.id
-    if user.admin_level == "superadmin" or user.admin_level =="admin":
-        return redirect('/dashboard/admin')
+    request.session['loggedin'] = True
     return redirect('/dashboard')
 
 #Displays unread messages

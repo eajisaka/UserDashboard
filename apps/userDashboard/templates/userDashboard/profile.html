@@ -7,8 +7,8 @@
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-    <script src="{% static 'userDashboard/js/profile.js' %}"></script>
-    <link rel='stylesheet' href="{% static 'userDashboard/css/profile.css' %}">
+    <script src="{% static 'userDashboard/js/pop_over.js' %}"></script>
+    <link rel='stylesheet' href="{% static 'userDashboard/css/web_theme.css' %}">
 </head>
 <body>
     <div class='top'>
@@ -16,14 +16,13 @@
             <li class='my-auto nav-item'>
                 <p class='mt-2 ml-5 mr-3 font-weight-bold'>ConnectUs</p>
             </li>
-            {% if request.session.admin_level == "normal" %}
-                <li class='nav-item my-auto'>
-                    <a class='nav-link' href="/dashboard">Dashboard</a>
-                </li>
-            {% else %}
-                <li class='nav-item my-auto'>
-                    <a class='nav-link' href="/dashboard/admin">Dashboard</a>
-                </li>
+            <li class='nav-item my-auto'>
+                <a class='nav-link' href="/dashboard">Dashboard</a>
+            </li>
+            {% if curr_user.admin_level == "superadmin" or curr_user.admin_level == "admin" %}
+            <li class='nav-item my-auto'>
+                <a class='nav-link' href="/manage_users">Manage Users</a>
+            </li>
             {% endif %}
             {% if user.id == request.session.user_id %}
                 <li class='nav-item my-auto'>
@@ -37,19 +36,22 @@
                     <a class='nav-link' href="/profile/{{request.session.user_id}}">Profile</a>
                 </li>
             {% endif %}
+            {% if total_unread.count > 0 %}
             <li class='nav-item my-auto'>
                     <a class='nav-link' href="/unread">Unread Messages: {{total_unread.count}}</a>
-                </li>
+            </li>
+            {% endif %}
+            {% if friend_requests.count > 0 %}
             <li class='nav-item my-auto'>
                 <a class='nav-link' href="/friend_requests">Friend Requests: {{friend_requests.count}}</a>
             </li>
+            {% endif %}
             <li class='nav-item ml-auto my-auto'>
-                    <form method="POST">
-                        {% csrf_token %}
+                    <form method="GET" action='search_results'>
                         <label for ='search_name' class='sr-only'>Search: </label>
                         <div class='row'>
                         <input class='col-lg-10 form-control' type='text' placeholder='Search...' name="search_name">
-                        <a href="#"><img id='glass'src="{% static 'userDashboard/images/magnifier-tool.png' %}"></a>
+                        <a href="#"><img id='magnify'src="{% static 'userDashboard/images/magnifier-tool.png' %}"></a>
                         </div>
                     </form>
                 </li>
@@ -129,7 +131,7 @@
                         <h6 class='card-subtitle mt-2 mb-2'>{{message.created_at}}</h6>
                         <p class='card-text mt-2 mb-2'>{{message.message}}</p>
                         {% if message.receiver.id == request.session.user_id or curr_user.admin_level == "admin" or curr_user.admin_level == "superadmin" %}
-                        <a tabindex="0" class="popover-dismiss text-danger" role="button" data-toggle="popover" data-trigger="focus" title="Are you sure?" data-html="true" data-content="<a class='py-1 btn btn-danger border border-dark' href='/delete_message/{{message.id}}/{{user.id}}'>Delete</a><a class='py-1 ml-3 btn btn-primary border border-dark' href=''>Cancel</a>">Delete</a>
+                        <a tabindex="0" class="popover-dismiss text-danger" role="button" data-toggle="popover" data-trigger="focus" title="Are you sure?" data-html="true" data-content="<a class='py-1 btn border border-dark' href='/delete_message/{{message.id}}/{{user.id}}'>Delete</a><a class='py-1 ml-3 btn bg-secondary border border-dark' href=''>Cancel</a>">Delete</a>
                         {% endif %}
                 </div>
             </div>
@@ -148,7 +150,7 @@
                         <h6 class='card-subtitle mt-2 text-muted'>{{comment.created_at}}</h6>
                         <p class='card-text mt-2 mb-2'>{{comment.comment}}</p>
                         {% if comment.recipient.id == request.session.user_id or comment.commenter.id == request.session.user_id or curr_user.admin_level == "admin" or curr_user.admin_level == "superadmin" %}
-                        <a tabindex="0" class="popover-dismiss text-danger" role="button" data-toggle="popover" data-trigger="focus" title="Are you sure?" data-html="true" data-content="<a class='py-1 btn btn-danger border border-dark' href='/delete_comment/{{comment.id}}/{{user.id}}'>Delete</a><a class='py-1 ml-3 btn btn-primary border border-dark' href=''>Cancel</a>">Delete</a>
+                        <a tabindex="0" class="popover-dismiss text-danger" role="button" data-toggle="popover" data-trigger="focus" title="Are you sure?" data-html="true" data-content="<a class='py-1 btn border border-dark' href='/delete_comment/{{comment.id}}/{{user.id}}'>Delete</a><a class='py-1 ml-3 btn bg-secondary border border-dark' href=''>Cancel</a>">Delete</a>
                         {% endif %}
                     </div>
             </div>

@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib import messages
 import bcrypt
 import re
 EMAIL_REGEX = re.compile(r'^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$')
@@ -19,6 +20,12 @@ class UserManager(models.Manager):
             return errors
         errors['login'] = "Unable to log you in "
         return errors
+    
+    def is_email(self, getData):
+        if not EMAIL_REGEX.match(getData['search_name']):
+            return False
+        else:
+            return True
 
     #Verifies password from the edit form as well as verifies previous password to make sure password change was intended
     def validator_password(self,postData):

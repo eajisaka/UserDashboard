@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <title>User Dashboard</title>
+        {% load static %}
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script src="{% static 'userDashboard/js/pop_over.js' %}"></script>
+    <link rel='stylesheet' href="{% static 'userDashboard/css/web_theme.css' %}">
+</head>
+<body>
+    <div class='top'>
+        <ul class='nav'>
+            <li class='nav-item my-auto'>
+                <p class='mt-2 ml-5 mr-3 font-weight-bold'>ConnectUs</p>
+            </li>
+            <li class='nav-item my-auto'>
+                <a class='nav-link' href="/dashboard"><b>Dashboard</b></a>
+            </li>
+            {% if user.admin_level == "superadmin" or user.admin_level == "admin" %}
+            <li class='nav-item my-auto'>
+                <a class='nav-link' href="/manage_users">Manage Users</a>
+            </li>
+            {% endif %}
+            <li class='nav-item my-auto'>
+                    <a class='nav-link' href="/profile/{{request.session.user_id}}">Profile</a>
+            </li>
+            {% if total_unread.count > 0 %}
+            <li class='nav-item my-auto'>
+                    <a class='nav-link' href="/unread">Unread Messages: {{total_unread.count}}</a>
+            </li>
+            {% endif %}
+            {% if friend_requests.count > 0 %}
+            <li class='nav-item my-auto'>
+                <a class='nav-link' href="/friend_requests">Friend Requests: {{friend_requests.count}}</a>
+            </li>
+            {% endif %}
+            <li class='nav-item ml-auto my-auto'>
+                <form method="GET" action='search_results'>
+                    <label for ='search_name' class='sr-only'>Search: </label>
+                    <div class='row'>
+                    <input class='col-lg-10 form-control' type='text' placeholder='Search...' name="search_name">
+                    <a href="#"><img id='magnify'src="{% static 'userDashboard/images/magnifier-tool.png' %}"></a>
+                    </div>
+                </form>
+            </li>
+            <li class='mr-5 nav-item ml-3 my-auto'>
+                <a class='nav-link' href="/logout">Log Out</a>
+            </li>
+        </ul>
+        <hr class='m-0'>
+    </div>
+    <div class='container'>
+        <h2 class='mt-3'>Search Results: </h2>
+        {% if search3|length == 0 and search2|length == 0 and search1|length == 0 %}
+        <h4 class='mt-3'>Nothing found!</h4>
+        {% endif %}
+        {% if search_result|length > 0 %}
+        <div class='left-column col-lg-6'>
+            {% for search in search_result %}
+            <div class='card mt-3 border border-dark'>
+                <div class ='card-body'>
+                    <div class='row ml-0 my-auto'>
+                        {% if search.img_link == None or search.img_link == "" %}
+                        <img id='miniprofile'class='mr-1' src="{% static 'userDashboard/images/no_profile.png' %}">
+                        {% else %}
+                        <img id='miniprofile' class='mr-1' src="{{search.img_link}}">
+                        {% endif %}
+                        <h5 class='card-title ml-2 mt-3'><a href='/profile/{{search.id}}'>{{search.first_name}} {{search.last_name}}</a></h5>
+                        <h5 class='ml-auto mt-3 mr-3'><a href='/add_friend/{{user.id}}'>Add</a></h5>
+                    </div>
+                    <p class='card-text'>{{search.message}}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        {% if search1|length > 0 %}
+        <div class='left-column col-lg-6'>
+            {% for search in search1 %}
+            <div class='card mt-3 border border-dark'>
+                <div class ='card-body'>
+                    <div class='row ml-0 my-auto'>
+                        {% if search.img_link == None or search.img_link == "" %}
+                        <img id='miniprofile'class='mr-1' src="{% static 'userDashboard/images/no_profile.png' %}">
+                        {% else %}
+                        <img id='miniprofile' class='mr-1' src="{{search.img_link}}">
+                        {% endif %}
+                        <h5 class='card-title ml-2 mt-3'><a href='/profile/{{search.id}}'>{{search.first_name}} {{search.last_name}}</a></h5>
+                        <h5 class='ml-auto mt-3 mr-3'><a href='/add_friend/{{user.id}}'>Add</a></h5>
+                    </div>
+                    <p class='card-text'>{{search.message}}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        {% if search2|length > 0 %}
+        <div class='left-column col-lg-6'>
+            {% for search in search2 %}
+            <div class='card mt-3 border border-dark'>
+                <div class ='card-body'>
+                    <div class='row ml-0 my-auto'>
+                        {% if search.img_link == None or search.img_link == "" %}
+                        <img id='miniprofile'class='mr-1' src="{% static 'userDashboard/images/no_profile.png' %}">
+                        {% else %}
+                        <img id='miniprofile' class='mr-1' src="{{search.img_link}}">
+                        {% endif %}
+                        <h5 class='card-title ml-2 mt-3'><a href='/profile/{{search.id}}'>{{search.first_name}} {{search.last_name}}</a></h5>
+                        <h5 class='ml-auto mt-3 mr-3'><a href='/add_friend/{{user.id}}'>Add</a></h5>
+                    </div>
+                    <p class='card-text'>{{search.message}}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        <div class='bottom pt-3 pb-3 border-top mt-5'>
+            <p>©ConnectUs Inc. · <a href=''>Privacy</a> · <a href=''>Terms</a></p>
+        </div> 
+    </div>
+</body>
+</html>

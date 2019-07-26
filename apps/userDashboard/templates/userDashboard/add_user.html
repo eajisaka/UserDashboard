@@ -4,7 +4,7 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <title>User Dashboard</title>
     {% load static %}
-    <link rel='stylesheet' href="{% static 'userDashboard/css/add_user.css' %}">
+    <link rel='stylesheet' href="{% static 'userDashboard/css/web_theme.css' %}">
 </head>
 <body>
     <div class='top'>
@@ -13,12 +13,36 @@
                 <p class='mt-2 ml-5 mr-3 font-weight-bold'>ConnectUs</p>
             </li>
             <li class='nav-item my-auto'>
-                <a class='nav-link' href="/dashboard/admin">Dashboard</a>
+                <a class='nav-link' href="/dashboard">Dashboard</a>
             </li>
+            {% if user.admin_level == "superadmin" or user.admin_level == "admin" %}
             <li class='nav-item my-auto'>
-                    <a class='nav-link' href="/profile/{{request.session.user_id}}">Profile</a>
+                <a class='nav-link' href="/manage_users">Manage Users</a>
+            </li>
+            {% endif %}
+            <li class='nav-item my-auto'>
+                <a class='nav-link' href="/profile/{{request.session.user_id}}">Profile</a>
+            </li>
+            {% if total_unread.count > 0 %}
+            <li class='nav-item my-auto'>
+                <a class='nav-link' href="/unread">Unread Messages: {{total_unread.count}}</a>
+            </li>
+            {% endif %}
+            {% if friend_requests.count > 0 %}
+            <li class='nav-item my-auto'>
+                <a class='nav-link' href="/friend_requests">Friend Requests: {{friend_requests.count}}</a>
+            </li>
+            {% endif %}
+            <li class='nav-item ml-auto my-auto'>
+                    <form method="GET" action='search_results'>
+                        <label for ='search_name' class='sr-only'>Search: </label>
+                        <div class='row'>
+                            <input class='col-lg-10 form-control' type='text' placeholder='Search...' name="search_name">
+                            <a href="#"><img id='magnify' src="{% static 'userDashboard/images/magnifier-tool.png' %}"></a>
+                        </div>
+                    </form>
                 </li>
-            <li class='mr-5 nav-item ml-auto my-auto'>
+            <li class='mr-5 nav-item ml-3 my-auto'>
                 <a class='nav-link' href="/logout">Log Out</a>
             </li>
         </ul>
@@ -27,12 +51,12 @@
     <div class='container mt-3'>
         <div class='row'>
             <div class='left_side col-lg-6'>
-                <img src="{% static 'userDashboard/images/add_user.jpg' %}">
+                <img id='add_user_image' src="{% static 'userDashboard/images/add_user.jpg' %}">
             </div>
             <div class='right_side col-lg-6'>
                 <form class='form-register' method="POST" action="/add_user">
                     {% csrf_token %}
-                    <h1 class='text-center text-secondary'>Add User</h1>
+                    <h1 class='text-center'>Add User</h1>
                     <label for='register_email'>Email Address:</label>
                     {% if messages %}
                     {% for message in messages %}

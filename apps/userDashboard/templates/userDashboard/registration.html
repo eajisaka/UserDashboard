@@ -4,7 +4,7 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <title>User Dashboard</title>
     {% load static %}
-    <link rel='stylesheet' href="{% static 'userDashboard/css/registration.css' %}">
+    <link rel='stylesheet' href="{% static 'userDashboard/css/web_theme.css' %}">
 </head>
 <body>
     <div class='top'>
@@ -64,7 +64,7 @@
                     {% endif %}
                     {% endfor %}
                     {% endif %}
-                    <input class='mb-3 form-control' type='text' name='register_pass1'>
+                    <input class='mb-3 form-control' type='password' name='register_pass1'>
                     <label for='register_pass2'>Confirm Password:</label>
                     {% if messages %}
                     {% for message in messages %}
@@ -73,7 +73,7 @@
                     {% endif %}
                     {% endfor %}
                     {% endif %}
-                    <input class='mb-3 form-control' type='text' name='register_pass2'>
+                    <input class='mb-3 form-control' type='password' name='register_pass2'>
                     <button class='btn' type='submit'>Register</button>
                 </form>
             </div>

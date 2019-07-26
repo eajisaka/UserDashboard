@@ -4,7 +4,7 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <title>User Dashboard</title>
     {% load static %}
-    <link rel='stylesheet' href="{% static 'userDashboard/css/sign_in.css' %}">
+    <link rel='stylesheet' href="{% static 'userDashboard/css/web_theme.css' %}">
 
 </head>
 <body>
@@ -36,7 +36,7 @@
             <label for='sign_in_email' class='sr-only'>Email address</label>
             <input class='form-control' type='text' name='sign_in_email'placeholder='Email address'>
             <label for='sign_in_pass' class='sr-only'>Password</label>
-            <input class='form-control' type='text' name='sign_in_pass' placeholder='Password'>
+            <input class='form-control' type='password' name='sign_in_pass' placeholder='Password'>
             <button class='mt-4 mb-3 btn btn-block' type='submit'>Sign in</button>
         </form>
         <a href='/registration'>Don't have an account?</a>

@@ -4,7 +4,7 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <title>User Dashboard</title>
     {% load static %}
-    <link rel='stylesheet' href="{% static 'userDashboard/css/admin_edit_profile.css' %}">
+    <link rel='stylesheet' href="{% static 'userDashboard/css/web_theme.css' %}">
 </head>
 <body>
     <div class='top'>
@@ -12,22 +12,40 @@
             <li class='ml- nav-item'>
                 <p class='mt-2 ml-5 mr-3 font-weight-bold'>ConnectUs</p>
             </li>
-            {% if curr_user.admin_level == "normal" %}
             <li class='nav-item my-auto'>
                 <a class='nav-link' href="/dashboard">Dashboard</a>
             </li>
-            {% else %}
+            {% if curr_user.admin_level == "superadmin" or curr_user.admin_level == "admin" %}
             <li class='nav-item my-auto'>
-                <a class='nav-link' href="/dashboard/admin">Dashboard</a>
+                <a class='nav-link' href="/manage_users">Manage Users</a>
             </li>
             {% endif %}
             <li class='nav-item my-auto'>
-                    <a class='nav-link' href="/profile/{{request.session.user_id}}">Profile</a>
-                </li>
+                <a class='nav-link my-auto' href="/profile/{{request.session.user_id}}">Profile</a>
+            </li>
             <li class='nav-item my-auto'>
                 <a class='nav-link' href=""><b>Edit Profile</b></a>
             </li>
-            <li class='mr-5 nav-item my-auto ml-auto'>
+            {% if total_unread.count > 0 %}
+            <li class='nav-item my-auto'>
+                    <a class='nav-link' href="/unread">Unread Messages: {{total_unread.count}}</a>
+            </li>
+            {% endif %}
+            {% if friend_requests.count > 0 %}
+            <li class='nav-item my-auto'>
+                <a class='nav-link' href="/friend_requests">Friend Requests: {{friend_requests.count}}</a>
+            </li>
+            {% endif %}
+            <li class='nav-item ml-auto my-auto'>
+                    <form method="GET" action='search_results'>
+                        <label for ='search_name' class='sr-only'>Search: </label>
+                        <div class='row'>
+                        <input class='col-lg-10 form-control' type='text' placeholder='Search...' name="search_name">
+                        <a href="#"><img id='magnify'src="{% static 'userDashboard/images/magnifier-tool.png' %}"></a>
+                        </div>
+                    </form>
+                </li>
+            <li class='mr-5 nav-item my-auto ml-3'>
                 <a class='nav-link' href="/logout">Log Out</a>
             </li>
         </ul>
@@ -114,7 +132,7 @@
                     {% endif %}
                     {% endfor %}
                     {% endif %}
-                    <input class='mb-3 form-control' type='text' name='edit_pass1'>
+                    <input class='mb-3 form-control' type='password' name='edit_pass1'>
                     <label for='edit_pass2'>Confirm Password:</label>
                     {% if messages %}
                     {% for message in messages %}
@@ -123,7 +141,7 @@
                     {% endif %}
                     {% endfor %}
                     {% endif %}
-                    <input class='mb-3 form-control' type='text' name='edit_pass2'>
+                    <input class='mb-3 form-control' type='password' name='edit_pass2'>
                     <div class='row justify-content-end'>
                         {% if messages %}
                         {% for message in messages %}
@@ -137,6 +155,24 @@
                 </form>
             </div>
         </div>
+        <form method='POST' action="/admin_edit_image/{{user.id}}">
+            {% csrf_token %}
+            <h4 class='mt-4'>Add An Image(MUST be image url)</h4>
+            <textarea name='edit_profile_image' class='form-control border border-dark'>{{user.img_link}}</textarea>
+            <div class='row justify-content-end'>
+                {% if messages %}
+                {% for message in messages %}
+                {% if message.tags == "image success" %}
+                <p class='mr-3 my-auto text-success p-0'>{{message}}</p>
+                {% endif %}
+                {% endfor %}
+                {% endif %}
+                <button type='submit' class='mr-3 mt-2 text-right btn'>Save</button>
+            </div>
+        </form>
+        <div class='bottom pt-3 pb-3 border-top mt-5'>
+            <p>©ConnectUs Inc. · <a href=''>Privacy</a> · <a href=''>Terms</a></p>
+        </div> 
     </div>
 </body>
 </html>

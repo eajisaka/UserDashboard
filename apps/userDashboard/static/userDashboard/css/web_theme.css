@@ -1,3 +1,60 @@
+a{
+    color: #268BB4;
+}
+#add_user_image {
+    height: 100%;
+    width: 100%;
+}
+.btn{
+    background-color: #268BB4;
+    color: white;
+}
+#comment_btn{
+    background-color: #268BB4;
+    color: white;
+}
+.form-register{
+    max-width: 400px;
+    margin: auto;
+}
+.form-signin {
+    max-width: 330px;
+    width: 100%;
+    margin: auto;
+    padding-top: 80px;
+}
+.left_side{
+    text-align: center;
+    vertical-align: middle;
+}
+#magnify{
+    object-fit: contain;
+    width: 37px;
+    height: 37px;
+}
+#message_btn{
+    background-color:#268BB4;
+    color: white;
+}
+#messageBubble{
+    height: 200px;
+    width: 200px;
+    object-fit: contain;
+    width: 100%;
+}
+#miniprofile{
+    width: 60px;
+    height: 60px;
+}
+#profile{
+    width: 250px;
+    height: 250px;
+    object-fit: contain;
+}
+#register_icon{
+    object-fit: contain;
+    width: 100%;
+}
 .top{
     background-color: #268BB4;
 }
@@ -7,16 +64,4 @@
 .top p {
     color:white;
     font-size: 1.8rem;
-}
-.btn{
-    background-color: #268BB4;
-    color: white;
-}
-a{
-    color: #268BB4;
-}
-img{
-    object-fit: contain;
-    width: 37px;
-    height: 37px;
 }

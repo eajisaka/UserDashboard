@@ -7,8 +7,8 @@
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-    <script src="{% static 'userDashboard/js/admin_dashboard.js' %}"></script>
-    <link rel='stylesheet' href="{% static 'userDashboard/css/dashboard.css' %}">
+    <script src="{% static 'userDashboard/js/pop_over.js' %}"></script>
+    <link rel='stylesheet' href="{% static 'userDashboard/css/web_theme.css' %}">
 </head>
 <body>
     <div class='top'>
@@ -19,18 +19,26 @@
             <li class='nav-item my-auto'>
                 <a class='nav-link' href="/dashboard"><b>Dashboard</b></a>
             </li>
+            {% if user.admin_level == "superadmin" or user.admin_level == "admin" %}
+            <li class='nav-item my-auto'>
+                <a class='nav-link' href="/manage_users">Manage Users</a>
+            </li>
+            {% endif %}
             <li class='nav-item my-auto'>
                     <a class='nav-link' href="/profile/{{request.session.user_id}}">Profile</a>
             </li>
+            {% if total_unread.count > 0 %}
             <li class='nav-item my-auto'>
                     <a class='nav-link' href="/unread">Unread Messages: {{total_unread.count}}</a>
             </li>
+            {% endif %}
+            {% if friend_requests.count > 0 %}
             <li class='nav-item my-auto'>
                 <a class='nav-link' href="/friend_requests">Friend Requests: {{friend_requests.count}}</a>
             </li>
+            {% endif %}
             <li class='nav-item ml-auto my-auto'>
-                    <form method="POST">
-                        {% csrf_token %}
+                    <form method="GET" action='search_results'>
                         <label for ='search_name' class='sr-only'>Search: </label>
                         <div class='row'>
                         <input class='col-lg-10 form-control' type='text' placeholder='Search...' name="search_name">
@@ -46,61 +54,61 @@
     </div>
     <div class='container'>
         <h2 class='mt-3'>Welcome back {{user.first_name}}!</h2>
-        <h3>Here's whats new: </h3>
+        <h3 class='text-secondary'>Here's whats new: </h3>
         <div class='row'>
-            <div class='right-column col-lg-6'>
-                <h4 class='mt-5'>Friends List</h4>
-                {% for friend in all_friends %}
-                {% if friend.request_to.id != user.id %}
-                <div class='card mt-3 border border-dark ml-3'>
-                    <div class ='card-body'>
-                        <div class='row ml-0 my-auto'>
-                            {% if friend.request_to.img_link == None or friend.request_to.img_link == "" %}
-                            <img id='miniprofile'class='mr-1' src="{% static 'userDashboard/images/no_profile.png' %}">
-                            {% else %}
-                            <img id='miniprofile' class='mr-1' src="{{friend.request_to.img_link}}">
-                            {% endif %}
-                            <h5 class='card-title ml-2 mt-3'><a href='/profile/{{friend.request_to.id}}'>{{friend.request_to.first_name}} {{friend.request_to.last_name}}</a> </h5>
-                        </div>
-                        <h6 class='card-subtitle mt-2 mb-2'>Friends since: {{friend.created_at}}</h6>
-                        <a tabindex="0" class="popover-dismiss text-danger" role="button" data-toggle="popover" data-trigger="focus" title="Are you sure?" data-html="true" data-content="<a class='py-1 btn bg-danger' href='/remove_friend/{{friend.id}}'>Remove</a><a class='py-1 ml-3 btn bg-primary' href=''>Cancel</a>">Remove</a>
-                    </div>
-                </div>
-                {% else %}
+            <div class='left-column col-lg-6'>
+                <h4 class ='mt-5'>Most Recent Messages</h4>
+                {% for message in user_messages %}
                 <div class='card mt-3 border border-dark'>
                     <div class ='card-body'>
                         <div class='row ml-0 my-auto'>
-                            {% if friend.friend_requester.img_link == None or friend.friend_requester.img_link == "" %}
+                            {% if message.sender.img_link == None or message.sender.img_link == "" %}
                             <img id='miniprofile'class='mr-1' src="{% static 'userDashboard/images/no_profile.png' %}">
                             {% else %}
-                            <img id='miniprofile' class='mr-1' src="{{friend.friend_requester.img_link}}">
+                            <img id='miniprofile' class='mr-1' src="{{message.sender.img_link}}">
                             {% endif %}
-                            <h5 class='card-title ml-2 mt-3'><a href='/profile/{{friend.friend_requester.id}}'>{{friend.friend_requester.first_name}} {{friend.friend_requester.last_name}}</a> </h5>
+                            <h5 class='card-title ml-2 mt-3'><a href='/profile/{{message.sender.id}}'>{{message.sender.first_name}} {{message.sender.last_name}}</a> messaged:</h5>
                         </div>
-                            <h6 class='card-subtitle mt-2 mb-2 text-muted'>Friends since: {{friend.created_at}}</h6>
-                            <a tabindex="0" class="popover-dismiss text-danger" role="button" data-toggle="popover" data-trigger="focus" title="Are you sure?" data-html="true" data-content="<a class='py-1 btn bg-danger' href='/remove_friend/{{friend.id}}'>Remove</a><a class='py-1 ml-3 btn bg-primary' href=''>Cancel</a>">Remove</a>
-                        </div>
+                    <h6 class='card-subtitle mt-2 mb-2 text-muted'>{{message.created_at}}</h6>
+                    <p class='card-text'>{{message.message}}</p>
                     </div>
-                {% endif %}
+                </div>
                 {% endfor %}
             </div>
-        <div class='left-column col-lg-6'>
-            <h4 class ='mt-5'>Most Recent Messages</h4>
-            {% for message in user_messages %}
+        <div class='right-column col-lg-6'>
+            <h4 class='mt-5'>Friends List</h4>
+            {% for friend in all_friends %}
+            {% if friend.request_to.id != user.id %}
+            <div class='card mt-3 border border-dark ml-3'>
+                <div class ='card-body'>
+                    <div class='row ml-0 my-auto'>
+                        {% if friend.request_to.img_link == None or friend.request_to.img_link == "" %}
+                        <img id='miniprofile'class='mr-1' src="{% static 'userDashboard/images/no_profile.png' %}">
+                        {% else %}
+                        <img id='miniprofile' class='mr-1' src="{{friend.request_to.img_link}}">
+                        {% endif %}
+                        <h5 class='card-title ml-2 mt-3'><a href='/profile/{{friend.request_to.id}}'>{{friend.request_to.first_name}} {{friend.request_to.last_name}}</a> </h5>
+                    </div>
+                    <h6 class='card-subtitle mt-2 mb-2'>Friends since: {{friend.created_at}}</h6>
+                    <a tabindex="0" class="popover-dismiss text-danger" role="button" data-toggle="popover" data-trigger="focus" title="Are you sure?" data-html="true" data-content="<a class='py-1 btn' href='/remove_friend/{{friend.id}}'>Remove</a><a class='py-1 ml-3 btn bg-secondary' href=''>Cancel</a>">Remove</a>
+                </div>
+            </div>
+            {% else %}
             <div class='card mt-3 border border-dark'>
                 <div class ='card-body'>
                     <div class='row ml-0 my-auto'>
-                        {% if message.sender.img_link == None or message.sender.img_link == "" %}
+                        {% if friend.friend_requester.img_link == None or friend.friend_requester.img_link == "" %}
                         <img id='miniprofile'class='mr-1' src="{% static 'userDashboard/images/no_profile.png' %}">
                         {% else %}
-                        <img id='miniprofile' class='mr-1' src="{{message.sender.img_link}}">
+                        <img id='miniprofile' class='mr-1' src="{{friend.friend_requester.img_link}}">
                         {% endif %}
-                        <h5 class='card-title ml-2 mt-3'><a href='/profile/{{message.sender.id}}'>{{message.sender.first_name}} {{message.sender.last_name}}</a> messaged:</h5>
+                        <h5 class='card-title ml-2 mt-3'><a href='/profile/{{friend.friend_requester.id}}'>{{friend.friend_requester.first_name}} {{friend.friend_requester.last_name}}</a> </h5>
                     </div>
-                    <h6 class='card-subtitle mt-2 mb-2 text-muted'>{{message.created_at}}</h6>
-                    <p class='card-text'>{{message.message}}</p>
+                    <h6 class='card-subtitle mt-2 mb-2 text-muted'>Friends since: {{friend.created_at}}</h6>
+                    <a tabindex="0" class="popover-dismiss text-danger" role="button" data-toggle="popover" data-trigger="focus" title="Are you sure?" data-html="true" data-content="<a class='py-1 btn' href='/remove_friend/{{friend.id}}'>Remove</a><a class='py-1 ml-3 btn bg-secondary' href=''>Cancel</a>">Remove</a>
+                    </div>
                 </div>
-            </div>
+            {% endif %}
             {% endfor %}
         </div>
     </div>

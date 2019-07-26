@@ -16,37 +16,39 @@
             <li class='nav-item my-auto'>
                 <p class='mt-2 ml-5 mr-3 font-weight-bold'>ConnectUs</p>
             </li>
-            {% if user.admin_level == "normal" %}
-                <li class='nav-item my-auto'>
-                    <a class='nav-link' href="/dashboard">Dashboard</a>
-                </li>
-            {% else %}
-                <li class='nav-item my-auto'>
-                    <a class='nav-link' href="/dashboard/admin">Dashboard</a>
-                </li>
+            <li class='nav-item my-auto'>
+                <a class='nav-link' href="/dashboard">Dashboard</a>
+            </li>
+            {% if user.admin_level == "superadmin" or user.admin_level == "admin" %}
+            <li class='nav-item my-auto'>
+                <a class='nav-link' href="/manage_users">Manage Users</a>
+            </li>
             {% endif %}
-                <li class='nav-item my-auto'>
-                    <a class='nav-link' href="/profile/{{request.session.user_id}}">Profile</a>
-                </li>
-                <li class='nav-item my-auto'>
-                    <a class='nav-link' href="/unread"><b>Unread Messages: {{total_unread.count}}</b></a>
-                </li>
-                <li class='nav-item my-auto'>
-                    <a class='nav-link' href="/friend_requests">Friend Requests: {{friend_requests.count}}</a>
-                </li>
-                <li class='nav-item ml-auto my-auto'>
-                    <form method="POST">
-                        {% csrf_token %}
-                        <label for ='search_name' class='sr-only'>Search: </label>
-                        <div class='row'>
-                        <input class='col-lg-10 form-control' type='text' placeholder='Search...' name="search_name">
-                        <a href="#"><img src="{% static 'userDashboard/images/magnifier-tool.png' %}"></a>
-                        </div>
-                    </form>
-                </li>
-                <li class='mr-5 nav-item ml-3 my-auto'>
-                    <a class='nav-link' href="/logout">Log Out</a>
-                </li>
+            <li class='nav-item my-auto'>
+                <a class='nav-link' href="/profile/{{request.session.user_id}}">Profile</a>
+            </li>
+            {% if total_unread.count > 0 %}
+            <li class='nav-item my-auto'>
+                <a class='nav-link' href="/unread"><b>Unread Messages: {{total_unread.count}}</b></a>
+            </li>
+            {% endif %}
+            {% if friend_requests.count > 0 %}
+            <li class='nav-item my-auto'>
+                <a class='nav-link' href="/friend_requests">Friend Requests: {{friend_requests.count}}</a>
+            </li>
+            {% endif %}
+            <li class='nav-item ml-auto my-auto'>
+                <form method="GET" action='search_results'>
+                    <label for ='search_name' class='sr-only'>Search: </label>
+                    <div class='row'>
+                    <input class='col-lg-10 form-control' type='text' placeholder='Search...' name="search_name">
+                    <a href="#"><img id='magnify' src="{% static 'userDashboard/images/magnifier-tool.png' %}"></a>
+                    </div>
+                </form>
+            </li>
+            <li class='mr-5 nav-item ml-3 my-auto'>
+                <a class='nav-link' href="/logout">Log Out</a>
+            </li>
         </ul>
         <hr class='m-0'>
     </div>
@@ -57,9 +59,16 @@
         {% for message in new_messages %}
         <div class='card mt-3 border border-dark'>
             <div class ='card-body'>
-                <h5 class='card-title'><a href='/profile/{{message.sender.id}}'>{{message.sender.first_name}} {{message.sender.last_name}}</a> messaged:</h5>
-                <h6 class='card-subtitle mb-2 text-muted'>{{message.created_at}}</h6>
-                <p class='card-text'>{{message.message}}</p>
+                <div class='row ml-0 my-auto'>                            
+                    {% if friend.request_to.img_link == None or friend.request_to.img_link == "" %}
+                    <img id='miniprofile'class='mr-1' src="{% static 'userDashboard/images/no_profile.png' %}">
+                        {% else %}
+                    <img id='miniprofile' class='mr-1' src="{{friend.request_to.img_link}}">
+                    {% endif %}
+                    <h5 class='card-title ml-2 mt-3'><a href='/profile/{{message.sender.id}}'>{{message.sender.first_name}} {{message.sender.last_name}}</a> messaged:</h5>
+                </div>
+                <h6 class='card-subtitle mb-2 mt-2'>{{message.created_at}}</h6>
+                <p class='card-text mb-2'>{{message.message}}</p>
                 <a tabindex="0" 
                 class="popover-dismiss text-danger"
                 role="button" 

@@ -13,27 +13,35 @@
                 <p class='mt-2 ml-5 mr-3 font-weight-bold'>ConnectUs</p>
             </li>
             <li class='nav-item my-auto'>
-                <a class='nav-link' href="/dashboard/admin">Dashboard</a>
+                <a class='nav-link' href="/dashboard">Dashboard</a>
             </li>
+            {% if user.admin_level == "superadmin" or user.admin_level == "admin" %}
+            <li class='nav-item my-auto'>
+                <a class='nav-link' href="/manage_users">Manage Users</a>
+            </li>
+            {% endif %}
             <li class='nav-item my-auto'>
                     <a class='nav-link' href="/profile/{{request.session.user_id}}">Profile</a>
             </li>
+            {% if total_unread.count > 0 %}
             <li class='nav-item my-auto'>
                     <a class='nav-link' href="/unread">Unread Messages: {{total_unread.count}}</a>
             </li>
+            {% endif %}
+            {% if friend_requests.count > 0 %}
             <li class='nav-item my-auto'>
                 <a class='nav-link' href="/friend_requests"><b>Friend Requests: {{friend_requests.count}}</b></a>
             </li>
+            {% endif %}
             <li class='nav-item ml-auto my-auto'>
-                    <form method="POST">
-                        {% csrf_token %}
-                        <label for ='search_name' class='sr-only'>Search: </label>
-                        <div class='row'>
-                        <input class='col-lg-10 form-control' type='text' placeholder='Search...' name="search_name">
-                        <a href="#"><img src="{% static 'userDashboard/images/magnifier-tool.png' %}"></a>
-                        </div>
-                    </form>
-                </li>
+                <form method="GET" action='search_results'>
+                    <label for ='search_name' class='sr-only'>Search: </label>
+                    <div class='row'>
+                    <input class='col-lg-10 form-control' type='text' placeholder='Search...' name="search_name">
+                    <a href="#"><img id='magnify' src="{% static 'userDashboard/images/magnifier-tool.png' %}"></a>
+                    </div>
+                </form>
+            </li>
             <li class='mr-5 nav-item ml-3 my-auto'>
                 <a class='nav-link' href="/logout">Log Out</a>
             </li>
@@ -63,8 +71,15 @@
         {% for request in friend_requests %}
         <div class='card mt-3 border border-dark col-lg-6'>
             <div class ='card-body'>
-                <h5 class='card-title'><a href='/profile/{{request.friend_requester.id}}'>{{request.friend_requester.first_name}} {{request.friend_requester.last_name}}</a> wants to be friends! </h5>
-                <h6 class='card-subtitle mb-2 mt-3'><a class='btn bg-success mr-3' href='/accept/{{request.id}}'>Accept</a><a class='btn bg-danger' href ='/reject/{{request.id}}'>Decline</a></h6>
+                <div class='row ml-0 my-auto'>
+                    {% if friend.friend_requester.img_link == None or friend.friend_requester.img_link == "" %}
+                    <img id='miniprofile'class='mr-1' src="{% static 'userDashboard/images/no_profile.png' %}">
+                    {% else %}
+                    <img id='miniprofile' class='mr-1' src="{{friend.friend_requester.img_link}}">
+                    {% endif %}
+                    <h5 class='card-title ml-2 mt-3'><a href='/profile/{{request.friend_requester.id}}'>{{request.friend_requester.first_name}} {{request.friend_requester.last_name}}</a> wants to be friends! </h5>
+                </div>
+                <h6 class='card-subtitle mb-2 mt-3'><a class='btn mr-3' href='/accept/{{request.id}}'>Accept</a><a class='btn bg-secondary' href ='/reject/{{request.id}}'>Decline</a></h6>
             </div>
         </div>
         {% endfor %}
