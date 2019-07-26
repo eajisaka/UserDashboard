@@ -5,26 +5,26 @@
     <title>User Dashboard</title>
     {% load static %}
     <link rel='stylesheet' href="{% static 'userDashboard/css/sign_in.css' %}">
+
 </head>
 <body>
     <div class='top'>
         <ul class='nav'>
-            <li class='nav-item'>
+            <li class='nav-item my-auto'>
                 <p class='mt-2 ml-5 mr-3 font-weight-bold'>ConnectUs</p>
             </li>
-            <li class='nav-item'>
+            <li class='nav-item my-auto'>
                 <a class='nav-link' href="/">Home</a>
             </li>
-            <li class='mr-5 nav-item ml-auto'>
+            <li class='mr-5 nav-item ml-auto my-auto'>
                 <a class='nav-link' href="/signin">Sign in</a>
             </li>
         </ul>
-        <hr class='m-0'>
     </div>
     <div class='container text-center'>
         <form class='form-signin' method="POST" action="/signin_user">
             {% csrf_token %}
-            <img class='mb-3'src="{% static 'userDashboard/images/message_bubble.png' %}" id='messageBubble'>
+            <img class='mb-3'src="{% static 'userDashboard/images/sign_in.jpg' %}" id='messageBubble'>
             <h1 class='mb-3'>Please sign in</h1>
             {% if messages %}
             {% for message in messages %}
@@ -37,7 +37,7 @@
             <input class='form-control' type='text' name='sign_in_email'placeholder='Email address'>
             <label for='sign_in_pass' class='sr-only'>Password</label>
             <input class='form-control' type='text' name='sign_in_pass' placeholder='Password'>
-            <button class='mt-4 mb-3 btn btn-primary btn-block border border-dark' type='submit'>Sign in</button>
+            <button class='mt-4 mb-3 btn btn-block' type='submit'>Sign in</button>
         </form>
         <a href='/registration'>Don't have an account?</a>
         <div class='bottom pt-3 pb-3 border-top mt-5 text-left'>

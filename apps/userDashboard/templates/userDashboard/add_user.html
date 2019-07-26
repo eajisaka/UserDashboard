@@ -9,83 +9,91 @@
 <body>
     <div class='top'>
         <ul class='nav'>
-            <li class='ml- nav-item'>
-                <p class='mt-2 ml-5 mr-3 font-weight-bold'>Messenger</p>
+            <li class='nav-item my-auto'>
+                <p class='mt-2 ml-5 mr-3 font-weight-bold'>ConnectUs</p>
             </li>
-            <li class='nav-item'>
+            <li class='nav-item my-auto'>
                 <a class='nav-link' href="/dashboard/admin">Dashboard</a>
             </li>
-            <li class='nav-item'>
+            <li class='nav-item my-auto'>
                     <a class='nav-link' href="/profile/{{request.session.user_id}}">Profile</a>
                 </li>
-            <li class='mr-5 nav-item ml-auto'>
+            <li class='mr-5 nav-item ml-auto my-auto'>
                 <a class='nav-link' href="/logout">Log Out</a>
             </li>
         </ul>
         <hr class='m-0'>
     </div>
-    <div class='container'>
-        <div class='left_side mx-auto'>
-            <form class='form-register' method="POST" action="/add_user">
-                {% csrf_token %}
-                <h1 class='text-center text-secondary'>Add User</h1>
-                <label for='register_email'>Email Address:</label>
-                {% if messages %}
-                {% for message in messages %}
-                {% if message.tags == "email error" %}
-                <p><small class='text-danger'>{{message}}</small></p>
-                {% endif %}
-                {% endfor %}
-                {% endif %}
-                <input class='mb-3 form-control' type='text' name='register_email'>
-                <label for='register_first_name'>First Name:</label>
-                {% if messages %}
-                {% for message in messages %}
-                {% if message.tags == "first error" %}
-                <p><small class='text-danger'>{{message}}</small></p>
-                {% endif %}
-                {% endfor %}
-                {% endif %}
-                <input class='mb-3 form-control' type='text' name='register_first_name'>
-                <label for='register_last_name'>Last Name:</label>
-                {% if messages %}
-                {% for message in messages %}
-                {% if message.tags == "last error" %}
-                <p><small class='text-danger'>{{message}}</small></p>
-                {% endif %}
-                {% endfor %}
-                {% endif %}
-                <input class='mb-3 form-control' type='text' name='register_last_name'>
-                <label for='register_pass1'>Password:</label>
-                {% if messages %}
-                {% for message in messages %}
-                {% if message.tags == "pass1 error" %}
-                <p><small class='text-danger'>{{message}}</small></p>
-                {% endif %}
-                {% endfor %}
-                {% endif %}
-                <input class='mb-3 form-control' type='text' name='register_pass1'>
-                <label for='register_pass2'>Confirm Password:</label>
-                {% if messages %}
-                {% for message in messages %}
-                {% if message.tags == "pass2 error" %}
-                <p><small class='text-danger'>{{message}}</small></p>
-                {% endif %}
-                {% endfor %}
-                {% endif %}
-                <input class='mb-3 form-control' type='text' name='register_pass2'>
-                <div class='row'>
-                    <button class='btn btn-primary border border-dark ml-3' type='submit'>Create</button>
+    <div class='container mt-3'>
+        <div class='row'>
+            <div class='left_side col-lg-6'>
+                <img src="{% static 'userDashboard/images/add_user.jpg' %}">
+            </div>
+            <div class='right_side col-lg-6'>
+                <form class='form-register' method="POST" action="/add_user">
+                    {% csrf_token %}
+                    <h1 class='text-center text-secondary'>Add User</h1>
+                    <label for='register_email'>Email Address:</label>
                     {% if messages %}
                     {% for message in messages %}
-                    {% if message.tags == "add_user success" %}
-                    <p class='ml-3 my-auto text-success p-0'>{{message}}</p>
+                    {% if message.tags == "email error" %}
+                    <p><small class='text-danger'>{{message}}</small></p>
                     {% endif %}
                     {% endfor %}
                     {% endif %}
-                </div>
-            </form>
-        </div>  
+                    <input class='mb-3 form-control' type='text' name='register_email'>
+                    <label for='register_first_name'>First Name:</label>
+                    {% if messages %}
+                    {% for message in messages %}
+                    {% if message.tags == "first error" %}
+                    <p><small class='text-danger'>{{message}}</small></p>
+                    {% endif %}
+                    {% endfor %}
+                    {% endif %}
+                    <input class='mb-3 form-control' type='text' name='register_first_name'>
+                    <label for='register_last_name'>Last Name:</label>
+                    {% if messages %}
+                    {% for message in messages %}
+                    {% if message.tags == "last error" %}
+                    <p><small class='text-danger'>{{message}}</small></p>
+                    {% endif %}
+                    {% endfor %}
+                    {% endif %}
+                    <input class='mb-3 form-control' type='text' name='register_last_name'>
+                    <label for='register_pass1'>Password:</label>
+                    {% if messages %}
+                    {% for message in messages %}
+                    {% if message.tags == "pass1 error" %}
+                    <p><small class='text-danger'>{{message}}</small></p>
+                    {% endif %}
+                    {% endfor %}
+                    {% endif %}
+                    <input class='mb-3 form-control' type='text' name='register_pass1'>
+                    <label for='register_pass2'>Confirm Password:</label>
+                    {% if messages %}
+                    {% for message in messages %}
+                    {% if message.tags == "pass2 error" %}
+                    <p><small class='text-danger'>{{message}}</small></p>
+                    {% endif %}
+                    {% endfor %}
+                    {% endif %}
+                    <input class='mb-3 form-control' type='text' name='register_pass2'>
+                    <div class='row'>
+                        <button class='btn btn-primary border border-dark ml-3' type='submit'>Create</button>
+                        {% if messages %}
+                        {% for message in messages %}
+                        {% if message.tags == "add_user success" %}
+                        <p class='ml-3 my-auto text-success p-0'>{{message}}</p>
+                        {% endif %}
+                        {% endfor %}
+                        {% endif %}
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class='bottom pt-3 pb-3 border-top mt-5'>
+            <p>©ConnectUs Inc. · <a href=''>Privacy</a> · <a href=''>Terms</a></p>
+        </div>   
     </div>
 </body>
 </html>

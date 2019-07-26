@@ -8,4 +8,23 @@
 #messageBubble{
     height: 200px;
     width: 200px;
+    object-fit: contain;
+    width: 100%;
+}
+.top{
+    background-color: #268BB4;
+}
+.top a{
+    color: white;
+}
+.top p {
+    color:white;
+    font-size: 1.8rem;
+}
+.btn{
+    background-color: #268BB4;
+    color: white;
+}
+.container a{
+    color: #268BB4;
 }

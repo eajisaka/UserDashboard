@@ -6,6 +6,7 @@ urlpatterns = [
     url(r'^accept/(?P<friend_id>\d+)$', views.accept),
     url(r'^add_friend/(?P<user_id>\d+)$', views.add_friend),
     url(r'^add_new$', views.add_new),
+    url(r'^add_profile_image$', views.add_profile_image),
     url(r'^add_user$', views.add_user),
     url(r'^admin_edit_password/(?P<user_id>\d+)$', views.admin_edit_password),
     url(r'^admin_edit_user/(?P<user_id>\d+)$', views.admin_edit_user),

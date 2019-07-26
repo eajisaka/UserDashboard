@@ -27,6 +27,13 @@ def add_friend(request, user_id):
 def add_new(request):
     return render(request, "userDashboard/add_user.html")
 
+def add_profile_image(request):
+    user_update = User.objects.get(id = request.session['user_id'])
+    user_update.img_link = request.POST['edit_profile_image']
+    user_update.save()
+    messages.success(request, 'Image link updated!', extra_tags = 'image')
+    return redirect('/edit')
+
 #Does verification for adding a new user similar to registration, making sure all fields are valid and the email is unique, gives prompt if successful
 def add_user(request):
     errors = User.objects.validator_registration(request.POST)
@@ -131,6 +138,7 @@ def comment(request, user_id, message_id):
     commenter = User.objects.get(id=request.session['user_id'])
     recipient = User.objects.get(id=user_id)
     new_comment = Comment.objects.create(comment=request.POST['comment_description'], commenter=commenter, recipient = recipient, the_message = message)
+    messages.success(request, "Comment added!", extra_tags = 'comment_added')
     return redirect(f'/profile/{user_id}')
 
 #Regular dashboard for anyone
@@ -138,14 +146,12 @@ def dashboard(request):
     if request.session['user_id'] == None:
         return redirect('/')
     user = User.objects.get(id=request.session['user_id'])
-    users = User.objects.all()
     user_messages = Message.objects.filter(receiver = user).order_by('-created_at')[:3]
     friend_requests = Friend.objects.filter(request_to = user).filter(acceptance = 0).annotate(count=Count('acceptance'))
     total_unread = Message.objects.filter(receiver = user).filter(read_status = 0).annotate(count=Count('read_status'))
     all_friends = user.friends_with.all()
     context = {
         "user" : user,
-        "users" : users,
         "total_unread" : total_unread,
         "user_messages" : user_messages,
         "all_friends" : all_friends,
@@ -155,7 +161,7 @@ def dashboard(request):
 
 #Deletes comment from database
 def delete_comment(request, comment_id, user_id):
-    delete_comment = Comment.object.get(id=comment_id)
+    delete_comment = Comment.objects.get(id=comment_id)
     delete_comment.delete()
     return redirect(f"/profile/{user_id}")
     
@@ -279,6 +285,7 @@ def profile(request, user_id):
             new_messages[x].save()
     messages = Message.objects.filter(receiver=user).order_by("-created_at")
     comments = Comment.objects.filter(recipient=user)
+    print(f'***********************{user.img_link}')
     context = {
         "curr_user" : curr_user,
         "user" : user,
@@ -358,7 +365,7 @@ def signin_user(request):
 #Displays unread messages
 def unread_messages(request):
     user = User.objects.get(id = request.session['user_id'])
-    new_messages = Message.objects.filter(read_status = 0)
+    new_messages = Message.objects.filter(read_status = 0).filter(receiver=user)
     total_unread = Message.objects.filter(receiver = user).filter(read_status = 0).annotate(count=Count('read_status'))
     friend_requests = Friend.objects.filter(request_to = user).filter(acceptance = 0).annotate(count=Count('acceptance'))
     context = {

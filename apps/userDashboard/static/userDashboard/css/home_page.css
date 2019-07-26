@@ -14,6 +14,8 @@
 .container img {
     height: 370px;
     width: 370px;
+    object-fit: contain;
+    width: 100%;
 }
 .row p{
     font-size: 15pt;
@@ -23,4 +25,21 @@
 }
 .bottom p{
     font-size: 12pt;
+}
+.top{
+    background-color: #268BB4;
+}
+.top a{
+    color: white;
+}
+.top p {
+    color:white;
+    font-size: 1.8rem;
+}
+.btn {
+    background-color:#268BB4;
+    color: white;
+}
+a{
+    color: #268BB4;
 }

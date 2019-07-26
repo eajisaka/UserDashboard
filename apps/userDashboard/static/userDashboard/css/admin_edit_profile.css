@@ -1,17 +1,3 @@
-.form-register{
-    max-width: 400px;
-    margin: auto;
-}
-
-.left_side{
-    text-align: center;
-    vertical-align: middle;
-}
-
-#register_icon{
-    object-fit: contain;
-    width: 100%;
-}
 .top{
     background-color: #268BB4;
 }
@@ -28,4 +14,9 @@
 }
 a{
     color: #268BB4;
+}
+img{
+    object-fit: contain;
+    width: 37px;
+    height: 37px;
 }

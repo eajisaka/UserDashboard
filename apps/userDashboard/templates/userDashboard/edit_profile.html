@@ -4,35 +4,45 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <title>User Dashboard</title>
     {% load static %}
-    <link rel='stylesheet' href="{% static 'userDashboard/css/edit_profile.css' %}">
+    <link rel='stylesheet' href="{% static 'userDashboard/css/web_theme.css' %}">
 </head>
 <body>
     <div class='top'>
         <ul class='nav'>
-            <li class='ml- nav-item'>
+            <li class='nav-item my-auto'>
                 <p class='mt-2 ml-5 mr-3 font-weight-bold'>ConnectUs</p>
             </li>
             {% if user.admin_level == "normal" %}
-            <li class='nav-item'>
-                <a class='nav-link' href="/dashboard">Dashboard</a>
+            <li class='nav-item my-auto'>
+                <a class='nav-link my-auto' href="/dashboard">Dashboard</a>
             </li>
             {% else %}
-            <li class='nav-item'>
+            <li class='nav-item my-auto'>
                 <a class='nav-link' href="/dashboard/admin">Dashboard</a>
             </li>
             {% endif %}
-                    <a class='nav-link' href="/profile/{{request.session.user_id}}">Profile</a>
+                    <a class='nav-link my-auto' href="/profile/{{request.session.user_id}}">Profile</a>
                 </li>
-            <li class='nav-item'>
+            <li class='nav-item my-auto'>
                 <a class='nav-link' href=""><b>Edit Profile</b></a>
             </li>
-            <li class='nav-item'>
+            <li class='nav-item my-auto'>
                     <a class='nav-link' href="/unread">Unread Messages: {{total_unread.count}}</a>
             </li>
-            <li class='nav-item'>
+            <li class='nav-item my-auto'>
                 <a class='nav-link' href="/friend_requests">Friend Requests: {{friend_requests.count}}</a>
             </li>
-            <li class='mr-5 nav-item ml-auto'>
+            <li class='nav-item ml-auto my-auto'>
+                <form method="POST">
+                    {% csrf_token %}
+                    <label for ='search_name' class='sr-only'>Search: </label>
+                    <div class='row'>
+                        <input class='col-lg-10 form-control' type='text' placeholder='Search...' name="search_name">
+                        <a href="#"><img src="{% static 'userDashboard/images/magnifier-tool.png' %}"></a>
+                    </div>
+                </form>
+            </li>
+            <li class='mr-5 nav-item ml-3 my-auto'>
                 <a class='nav-link' href="/logout">Log Out</a>
             </li>
         </ul>
@@ -81,7 +91,7 @@
                         {% endif %}
                         {% endfor %}
                         {% endif %}
-                        <button type='submit' class='mr-3 mt-2 text-right btn btn-primary border border-dark'>Save</button>
+                        <button type='submit' class='mr-3 mt-2 text-right btn'>Save</button>
                     </div>
                 </form>
             </div>
@@ -125,7 +135,7 @@
                         {% endif %}
                         {% endfor %}
                         {% endif %}
-                        <button type='submit' class='mr-3 mt-2 text-right btn btn-primary border border-dark'>Update Password</button>
+                        <button type='submit' class='mr-3 mt-2 text-right btn'>Update Password</button>
                     </div>
                 </form>
             </div>
@@ -142,9 +152,27 @@
                     {% endif %}
                     {% endfor %}
                     {% endif %}
-                    <button type='submit' class='mr-3 mt-2 text-right btn btn-primary border border-dark'>Save</button>
+                    <button type='submit' class='mr-3 mt-2 text-right btn'>Save</button>
                 </div>
             </form>
+            <form method='POST' action='/add_profile_image'>
+                {% csrf_token %}
+                <h4 class='mt-4'>Add An Image</h4>
+                <textarea name='edit_profile_image' class='form-control border border-dark'>{{user.img_link}}</textarea>
+                <div class='row justify-content-end'>
+                    {% if messages %}
+                    {% for message in messages %}
+                    {% if message.tags == "image success" %}
+                    <p class='mr-3 my-auto text-success p-0'>{{message}}</p>
+                    {% endif %}
+                    {% endfor %}
+                    {% endif %}
+                    <button type='submit' class='mr-3 mt-2 text-right btn'>Save</button>
+                </div>
+            </form>
+        <div class='bottom pt-3 pb-3 border-top mt-5'>
+            <p>©ConnectUs Inc. · <a href=''>Privacy</a> · <a href=''>Terms</a></p>
+        </div> 
     </div>
 </body>
 </html>

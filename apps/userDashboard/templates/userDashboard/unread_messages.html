@@ -3,40 +3,56 @@
 <head>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <title>User Dashboard</title>
+    {% load static %}
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script src="{% static 'userDashboard/js/admin_dashboard.js' %}"></script>
+    <link rel='stylesheet' href="{% static 'userDashboard/css/web_theme.css' %}">
 </head>
 <body>
     <div class='top'>
         <ul class='nav'>
-            <li class='ml- nav-item'>
+            <li class='nav-item my-auto'>
                 <p class='mt-2 ml-5 mr-3 font-weight-bold'>ConnectUs</p>
             </li>
             {% if user.admin_level == "normal" %}
-                <li class='nav-item'>
+                <li class='nav-item my-auto'>
                     <a class='nav-link' href="/dashboard">Dashboard</a>
                 </li>
             {% else %}
-                <li class='nav-item'>
+                <li class='nav-item my-auto'>
                     <a class='nav-link' href="/dashboard/admin">Dashboard</a>
                 </li>
             {% endif %}
-                <li class='nav-item'>
+                <li class='nav-item my-auto'>
                     <a class='nav-link' href="/profile/{{request.session.user_id}}">Profile</a>
                 </li>
-                <li class='nav-item'>
+                <li class='nav-item my-auto'>
                     <a class='nav-link' href="/unread"><b>Unread Messages: {{total_unread.count}}</b></a>
                 </li>
-                <li class='nav-item'>
+                <li class='nav-item my-auto'>
                     <a class='nav-link' href="/friend_requests">Friend Requests: {{friend_requests.count}}</a>
                 </li>
-            <li class='mr-5 nav-item ml-auto'>
-                <a class='nav-link' href="/logout">Log Out</a>
-            </li>
+                <li class='nav-item ml-auto my-auto'>
+                    <form method="POST">
+                        {% csrf_token %}
+                        <label for ='search_name' class='sr-only'>Search: </label>
+                        <div class='row'>
+                        <input class='col-lg-10 form-control' type='text' placeholder='Search...' name="search_name">
+                        <a href="#"><img src="{% static 'userDashboard/images/magnifier-tool.png' %}"></a>
+                        </div>
+                    </form>
+                </li>
+                <li class='mr-5 nav-item ml-3 my-auto'>
+                    <a class='nav-link' href="/logout">Log Out</a>
+                </li>
         </ul>
         <hr class='m-0'>
     </div>
-    <div class='container mt-5 text-center'>
+    <div class='container mt-5'>
         {% if total_unread.count == 0 %}
-        <h2>You don't have any unread messages!</h2>
+        <h4 class='text-center'>You don't have any unread messages!</h4>
         {% endif %}
         {% for message in new_messages %}
         <div class='card mt-3 border border-dark'>
@@ -44,6 +60,14 @@
                 <h5 class='card-title'><a href='/profile/{{message.sender.id}}'>{{message.sender.first_name}} {{message.sender.last_name}}</a> messaged:</h5>
                 <h6 class='card-subtitle mb-2 text-muted'>{{message.created_at}}</h6>
                 <p class='card-text'>{{message.message}}</p>
+                <a tabindex="0" 
+                class="popover-dismiss text-danger"
+                role="button" 
+                data-toggle="popover"
+                data-trigger="focus" 
+                title="Are you sure?"
+                data-html="true"
+                data-content="<a class='py-1 btn bg-danger' href='/delete_message/{{message.id}}/{{user.id}}'>Delete</a><a class='py-1 ml-3 btn' href=''>Cancel</a>">Delete</a>
             </div>
         </div>
         {% endfor %}

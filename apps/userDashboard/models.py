@@ -83,6 +83,7 @@ class User(models.Model):
     pw_hash = models.CharField(max_length = 100)
     admin_level = models.CharField(max_length = 10)
     description = models.TextField(null = True)
+    img_link = models.TextField(null = True)
     created_at = models.DateTimeField(auto_now_add = True)
     updated_at = models.DateTimeField(auto_now = True)
     objects = UserManager()
