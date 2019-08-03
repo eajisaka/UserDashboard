@@ -375,9 +375,8 @@ def search_results(request):
     search1 = None
     search2 = None
     search3 = None
-    search_input = request.GET['search_name']
-    if search_input == "" or search_input == " " or search_input == "   ":
-        search3 = "Invalid search type!"
+    search_input = request.GET['search_name'].strip() 
+    
     search_type = User.objects.is_email(request.GET)
     if search_type == True:
         search3 = User.objects.filter(email=search_input)
@@ -385,24 +384,22 @@ def search_results(request):
         search_query = search_input.split()
         if len(search_query) > 2:
             search3 = "Invalid search type!"
+        elif len(search_query) == 0:
+            search3 = "You didn't search for anything!"
+        elif len(search_query) == 1:
+            search1 = User.objects.filter(first_name=search_query[0])
+            search2 = User.objects.filter(last_name=search_query[0])
         else:
-            if len(search_query) == 0:
-                search3 = "You didn't search for anything!"
-            elif len(search_query) == 1:
-                search1 = User.objects.filter(first_name=search_query[0])
-                search2 = User.objects.filter(last_name=search_query[0])
-            else:
-                search1 = User.objects.filter(first_name=search_query[0], last_name=search_query[1])
-                search2 = User.objects.filter(first_name=search_query[1], last_name=search_query[0])
-
+            search1 = User.objects.filter(first_name=search_query[0], last_name=search_query[1])
+            search2 = User.objects.filter(first_name=search_query[1], last_name=search_query[0])
     context = {
         "user" : user,
         "total_unread" : total_unread,
         "user_messages" : user_messages,
         "friend_requests" : friend_requests,
-        "search3" : search3,
         "search1" : search1,
         "search2" : search2,
+        "search3" : search3,
     }
     return render(request, "userDashboard/search_results.html", context)
 

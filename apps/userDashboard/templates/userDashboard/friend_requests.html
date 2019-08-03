@@ -34,7 +34,7 @@
             </li>
             {% endif %}
             <li class='nav-item ml-auto my-auto'>
-                <form method="GET" action='search_results'>
+                <form method="GET" action='/search_results'>
                     <label for ='search_name' class='sr-only'>Search: </label>
                     <div class='row'>
                     <input class='col-lg-10 form-control' type='text' placeholder='Search...' name="search_name">
@@ -72,10 +72,10 @@
         <div class='card mt-3 border border-dark col-lg-6'>
             <div class ='card-body'>
                 <div class='row ml-0 my-auto'>
-                    {% if friend.friend_requester.img_link == None or friend.friend_requester.img_link == "" %}
+                    {% if request.friend_requester.img_link == None or request.friend_requester.img_link == "" %}
                     <img id='miniprofile'class='mr-1' src="{% static 'userDashboard/images/no_profile.png' %}">
                     {% else %}
-                    <img id='miniprofile' class='mr-1' src="{{friend.friend_requester.img_link}}">
+                    <img id='miniprofile' class='mr-1' src="{{request.friend_requester.img_link}}">
                     {% endif %}
                     <h5 class='card-title ml-2 mt-3'><a href='/profile/{{request.friend_requester.id}}'>{{request.friend_requester.first_name}} {{request.friend_requester.last_name}}</a> wants to be friends! </h5>
                 </div>

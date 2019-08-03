@@ -47,7 +47,7 @@
             </li>
             {% endif %}
             <li class='nav-item ml-auto my-auto'>
-                    <form method="GET" action='search_results'>
+                    <form method="GET" action='/search_results'>
                         <label for ='search_name' class='sr-only'>Search: </label>
                         <div class='row'>
                         <input class='col-lg-10 form-control' type='text' placeholder='Search...' name="search_name">
@@ -74,7 +74,7 @@
                 {% if messages %}
                 {% for message in messages %}
                 {% if message.tags == "add_friend success" %}
-                    <p class='ml-3 text-success p-0 my-auto'>{{message}}</p>
+                    <p class='text-success p-0 my-auto'>{{message}}</p>
                 {% endif %}
                 {% endfor %}
                 {% endif %}

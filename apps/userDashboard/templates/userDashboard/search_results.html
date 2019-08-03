@@ -38,7 +38,7 @@
             </li>
             {% endif %}
             <li class='nav-item ml-auto my-auto'>
-                <form method="GET" action='search_results'>
+                <form method="GET" action='/search_results'>
                     <label for ='search_name' class='sr-only'>Search: </label>
                     <div class='row'>
                     <input class='col-lg-10 form-control' type='text' placeholder='Search...' name="search_name">
@@ -57,9 +57,11 @@
         {% if search3|length == 0 and search2|length == 0 and search1|length == 0 %}
         <h4 class='mt-3'>Nothing found!</h4>
         {% endif %}
-        {% if search_result|length > 0 %}
+        {% if search3 is string and search3 != None %}
+        <h4 class='mt-3'>{{search3}}</h4>
+        {% else %}
         <div class='left-column col-lg-6'>
-            {% for search in search_result %}
+            {% for search in search3 %}
             <div class='card mt-3 border border-dark'>
                 <div class ='card-body'>
                     <div class='row ml-0 my-auto'>
@@ -69,7 +71,9 @@
                         <img id='miniprofile' class='mr-1' src="{{search.img_link}}">
                         {% endif %}
                         <h5 class='card-title ml-2 mt-3'><a href='/profile/{{search.id}}'>{{search.first_name}} {{search.last_name}}</a></h5>
-                        <h5 class='ml-auto mt-3 mr-3'><a href='/add_friend/{{user.id}}'>Add</a></h5>
+                        {% if search.id != request.session.user_id %}
+                        <h5 class='ml-auto mt-3 mr-3'><a href='/add_friend/{{search.id}}'>Add</a></h5>
+                        {% endif %}
                     </div>
                     <p class='card-text'>{{search.message}}</p>
                 </div>
@@ -90,7 +94,9 @@
                         <img id='miniprofile' class='mr-1' src="{{search.img_link}}">
                         {% endif %}
                         <h5 class='card-title ml-2 mt-3'><a href='/profile/{{search.id}}'>{{search.first_name}} {{search.last_name}}</a></h5>
-                        <h5 class='ml-auto mt-3 mr-3'><a href='/add_friend/{{user.id}}'>Add</a></h5>
+                        {% if search.id != request.session.user_id %}
+                        <h5 class='ml-auto mt-3 mr-3'><a href='/add_friend/{{search.id}}'>Add</a></h5>
+                        {% endif %}
                     </div>
                     <p class='card-text'>{{search.message}}</p>
                 </div>
@@ -111,7 +117,9 @@
                         <img id='miniprofile' class='mr-1' src="{{search.img_link}}">
                         {% endif %}
                         <h5 class='card-title ml-2 mt-3'><a href='/profile/{{search.id}}'>{{search.first_name}} {{search.last_name}}</a></h5>
-                        <h5 class='ml-auto mt-3 mr-3'><a href='/add_friend/{{user.id}}'>Add</a></h5>
+                        {% if search.id != request.session.user_id %}
+                        <h5 class='ml-auto mt-3 mr-3'><a href='/add_friend/{{search.id}}'>Add</a></h5>
+                        {% endif %}
                     </div>
                     <p class='card-text'>{{search.message}}</p>
                 </div>
