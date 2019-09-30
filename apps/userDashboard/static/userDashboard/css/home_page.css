@@ -12,8 +12,8 @@ a{
     font-size: 30pt;
 }
 .container img {
-    height: 370px;
-    width: 370px;
+    height: 250px;
+    width: 300px;
     object-fit: contain;
     width: 100%;
 }
