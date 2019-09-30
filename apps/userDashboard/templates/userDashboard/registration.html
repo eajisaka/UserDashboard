@@ -5,82 +5,97 @@
     <title>User Dashboard</title>
     {% load static %}
     <link rel='stylesheet' href="{% static 'userDashboard/css/web_theme.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <body>
-    <div class='top'>
-        <ul class='nav'>
-            <li class='nav-item my-auto'>
-                <p class='mt-2 ml-5 mr-3 font-weight-bold'>ConnectUs</p>
-            </li>
-            <li class='nav-item my-auto'>
-                <a class='nav-link' href="/">Home</a>
-            </li>
-            <li class='mr-5 nav-item ml-auto my-auto'>
-                <a class='nav-link' href="/signin">Sign in</a>
-            </li>
-        </ul>
-    </div>
+  <div class='top'>
+    <ul class='nav'>
+      <li class='nav-item my-auto'>
+        <p class='mt-2 ml-5 mr-3 font-weight-bold'>ConnectUs</p>
+      </li>
+      <li class='nav-item my-auto'>
+        <a class='nav-link' href="/">Home</a>
+      </li>
+      <li class='mr-5 nav-item ml-auto my-auto'>
+        <a class='nav-link' href="/signin">Sign in</a>
+      </li>
+    </ul>
+  </div>
     <div class='container text-left'>
-        <div class='row mt-5'>
-            <div class='left_side col-lg-6 my-auto'>
-                <img src="{% static 'userDashboard/images/join_us.jpg' %}" id='register_icon'>
-            </div>
-            <div class='right_side col-lg-6'>
-                <form class='form-register' method="POST" action="/register_user">
-                    {% csrf_token %}
-                    <h1 class='text-left'>Register</h1>
-                    <label for='register_email'>Email Address:</label>
-                    {% if messages %}
-                    {% for message in messages %}
-                    {% if message.tags == "email error" %}
-                    <p><small class='text-danger'>{{message}}</small></p>
-                    {% endif %}
-                    {% endfor %}
-                    {% endif %}
-                    <input class='mb-3 form-control' type='text' name='register_email'>
-                    <label for='register_first_name'>First Name:</label>
-                    {% if messages %}
-                    {% for message in messages %}
-                    {% if message.tags == "first error" %}
-                    <p><small class='text-danger'>{{message}}</small></p>
-                    {% endif %}
-                    {% endfor %}
-                    {% endif %}
-                    <input class='mb-3 form-control' type='text' name='register_first_name'>
-                    <label for='register_last_name'>Last Name:</label>
-                    {% if messages %}
-                    {% for message in messages %}
-                    {% if message.tags == "last error" %}
-                    <p><small class='text-danger'>{{message}}</small></p>
-                    {% endif %}
-                    {% endfor %}
-                    {% endif %}
-                    <input class='mb-3 form-control' type='text' name='register_last_name'>
-                    <label for='register_pass1'>Password:</label>
-                    {% if messages %}
-                    {% for message in messages %}
-                    {% if message.tags == "pass1 error" %}
-                    <p><small class='text-danger'>{{message}}</small></p>
-                    {% endif %}
-                    {% endfor %}
-                    {% endif %}
-                    <input class='mb-3 form-control' type='password' name='register_pass1'>
-                    <label for='register_pass2'>Confirm Password:</label>
-                    {% if messages %}
-                    {% for message in messages %}
-                    {% if message.tags == "pass2 error" %}
-                    <p><small class='text-danger'>{{message}}</small></p>
-                    {% endif %}
-                    {% endfor %}
-                    {% endif %}
-                    <input class='mb-3 form-control' type='password' name='register_pass2'>
-                    <button class='btn' type='submit'>Register</button>
-                </form>
-            </div>
-        </div> 
-        <div class='bottom pt-3 pb-3 border-top mt-5'>
-            <p>©ConnectUs Inc. · <a href=''>Privacy</a> · <a href=''>Terms</a></p>
-        </div>   
+      <div class='row mt-5'>
+        <div class='left_side col-lg-6 my-auto'>
+          <img src="{% static 'userDashboard/images/join_us.jpg' %}" id='register_icon'>
+        </div>
+          <div class='right_side col-lg-6 align-self-center'>
+            <form class='form-register' method="POST" action="/register_user">
+              {% csrf_token %}
+              <h1>Register</h1>
+
+              {% if messages %}
+              {% for message in messages %}
+              {% if message.tags == "email error" %}
+              <small class='text-danger'>{{message}}</small>
+              {% endif %}
+              {% endfor %}
+              {% endif %}
+              <div class='input-group my-3'>
+                <div class='input-group-prepend'>
+                  <span class="input-group-text" id="basic-addon1"><i class="fa fa-envelope-o" aria-hidden="true"></i></span>
+                </div>
+                <input class='form-control' type='email' placeholder='Email Address' name='register_email'>
+              </div>
+
+              {% if messages %}
+              {% for message in messages %}
+              {% if message.tags == "first error" %}
+              <small class='text-danger'>{{message}}</small>
+              {% endif %}
+              {% endfor %}
+              {% endif %}
+              {% if messages %}
+              {% for message in messages %}
+              {% if message.tags == "last error" %}
+              <small class='text-danger'>{{message}}</small>
+              {% endif %}
+              {% endfor %}
+              {% endif %}
+              <div class='input-group mb-3'>
+                <div class='input-group-prepend'>
+                  <span class="input-group-text" id="basic-addon1"><i class="fa fa-pencil" aria-hidden="true"></i></span>
+                </div>
+                <input class='form-control' placeholder='First Name' type='text' name='register_first_name'>
+                <input class='form-control ml-2' type='text' placeholder='Last Name' name='register_last_name'>
+              </div>
+
+              {% if messages %}
+              {% for message in messages %}
+              {% if message.tags == "pass1 error" %}
+              <small class='text-danger'>{{message}}</small>
+              {% endif %}
+              {% endfor %}
+              {% endif %}
+              {% if messages %}
+              {% for message in messages %}
+              {% if message.tags == "pass2 error" %}
+              <small class='text-danger'>{{message}}</small>
+              {% endif %}
+              {% endfor %}
+              {% endif %}
+              <div class='input-group mb-3'>
+                <div class='input-group-prepend'>
+                  <span class="input-group-text" id="basic-addon1"><i class="fa fa-key" aria-hidden="true"></i></i></span>
+                </div>
+                <input class='form-control' placeholder='Password' type='password' name='register_pass1'>
+                <input class='form-control ml-2' placeholder='Confirm' type='password' name='register_pass2'>
+              </div>
+
+              <button class='btn btn-sm' type='submit'>Register</button>
+            </form>
+          </div>
+      </div>
+      <div class='bottom py-3 border-top mt-5'>
+        <p>©ConnectUs Inc. · <a href=''>Privacy</a> · <a href=''>Terms</a></p>
+      </div>
     </div>
 </body>
 </html>

@@ -11,170 +11,170 @@
     <link rel='stylesheet' href="{% static 'userDashboard/css/web_theme.css' %}">
 </head>
 <body>
-    <div class='top'>
-        <ul class='nav'>
-            <li class='my-auto nav-item'>
-                <p class='mt-2 ml-5 mr-3 font-weight-bold'>ConnectUs</p>
-            </li>
-            <li class='nav-item my-auto'>
-                <a class='nav-link' href="/dashboard">Dashboard</a>
-            </li>
-            {% if curr_user.admin_level == "superadmin" or curr_user.admin_level == "admin" %}
-            <li class='nav-item my-auto'>
-                <a class='nav-link' href="/manage_users">Manage Users</a>
-            </li>
-            {% endif %}
-            {% if user.id == request.session.user_id %}
-                <li class='nav-item my-auto'>
-                    <a class='nav-link' href="/profile/{{request.session.user_id}}"><b>Profile</b></a>
-                </li>
-                <li class='nav-item my-auto'>
-                    <a class='nav-link' href="/edit">Edit Profile</a>
-                </li>
-            {% else %}
-                <li class='nav-item my-auto'>
-                    <a class='nav-link' href="/profile/{{request.session.user_id}}">Profile</a>
-                </li>
-            {% endif %}
-            {% if total_unread.count > 0 %}
-            <li class='nav-item my-auto'>
-                    <a class='nav-link' href="/unread">Unread Messages: {{total_unread.count}}</a>
-            </li>
-            {% endif %}
-            {% if friend_requests.count > 0 %}
-            <li class='nav-item my-auto'>
-                <a class='nav-link' href="/friend_requests">Friend Requests: {{friend_requests.count}}</a>
-            </li>
-            {% endif %}
-            <li class='nav-item ml-auto my-auto'>
-                    <form method="GET" action='/search_results'>
-                        <label for ='search_name' class='sr-only'>Search: </label>
-                        <div class='row'>
-                        <input class='col-lg-10 form-control' type='text' placeholder='Search...' name="search_name">
-                        <a href="#"><img id='magnify'src="{% static 'userDashboard/images/magnifier-tool.png' %}"></a>
-                        </div>
-                    </form>
-                </li>
-            <li class='mr-5 nav-item ml-3 my-auto'>
-                <a class='nav-link' href="/logout">Log Out</a>
-            </li>
-        </ul>
-    </div>
+  <div class='top'>
+    <ul class='nav'>
+      <li class='my-auto nav-item'>
+        <p class='mt-2 ml-5 mr-3 font-weight-bold'>ConnectUs</p>
+      </li>
+      <li class='nav-item my-auto'>
+        <a class='nav-link' href="/dashboard">Dashboard</a>
+      </li>
+      {% if curr_user.admin_level == "superadmin" or curr_user.admin_level == "admin" %}
+      <li class='nav-item my-auto'>
+        <a class='nav-link' href="/manage_users">Manage Users</a>
+      </li>
+      {% endif %}
+      {% if user.id == request.session.user_id %}
+      <li class='nav-item my-auto'>
+        <a class='nav-link' href="/profile/{{request.session.user_id}}"><b>Profile</b></a>
+      </li>
+      <li class='nav-item my-auto'>
+        <a class='nav-link' href="/edit">Edit Profile</a>
+      </li>
+      {% else %}
+      <li class='nav-item my-auto'>
+        <a class='nav-link' href="/profile/{{request.session.user_id}}">Profile</a>
+      </li>
+      {% endif %}
+      {% if total_unread.count > 0 %}
+      <li class='nav-item my-auto'>
+        <a class='nav-link' href="/unread">Unread Messages: {{total_unread.count}}</a>
+      </li>
+      {% endif %}
+      {% if friend_requests.count > 0 %}
+      <li class='nav-item my-auto'>
+        <a class='nav-link' href="/friend_requests">Friend Requests: {{friend_requests.count}}</a>
+      </li>
+      {% endif %}
+      <li class='nav-item ml-auto my-auto'>
+        <form method="GET" action='/search_results'>
+          <label for ='search_name' class='sr-only'>Search: </label>
+          <div class='row'>
+            <input class='col-lg-10 form-control' type='text' placeholder='Search...' name="search_name">
+            <a href="#"><img id='magnify'src="{% static 'userDashboard/images/magnifier-tool.png' %}"></a>
+          </div>
+        </form>
+      </li>
+      <li class='mr-5 nav-item ml-3 my-auto'>
+          <a class='nav-link' href="/logout">Log Out</a>
+      </li>
+    </ul>
+  </div>
     <div class='container'>
-        <div class='row mt-3'>
-            <div class='left-picture col-lg-3'>
-                {% if user.img_link == None or user.img_link == "" %}
-                <img id='profile' class='mt-3 mx-auto'src="{% static 'userDashboard/images/no_profile.png' %}">
-                {% else %}
-                <img id='profile' class='mt-3 mx-auto'src="{{user.img_link}}">
-                {% endif %}
-            </div>
-            <div class='right-text col-lg-9 my-auto'>
-                <h4>{{user.first_name}} {{user.last_name}}</h4>
-                {% if messages %}
-                {% for message in messages %}
-                {% if message.tags == "add_friend success" %}
-                    <p class='text-success p-0 my-auto'>{{message}}</p>
-                {% endif %}
-                {% endfor %}
-                {% endif %}
-                {% if curr_user_requests|length > 0 %}
-                {% elif curr_user_request_by|length > 0 %}
-                {% elif user.id != request.session.user_id %}
-                <a href='/add_friend/{{user.id}}'>Add Friend</a>
-                {% endif %}
-                <div class='row'>
-                    <div class='labels col-lg-2 mt-2'>
-                        <p>Registered at: </p>
-                        <p>User ID: </p>
-                        <p>Email address: </p>
-                        <p>Description: </p>
-                    </div>
-                    <div class='data col-lg-4 mt-2'>
-                        <p>{{user.created_at}}</p>
-                        <p>#{{user.id}}</p>
-                        <p>{{user.email}}</p>
-                        <p>{{user.description}}</p>
-                    </div>
-                </div>
-            </div>
+      <div class='row mt-3'>
+        <div class='left-picture col-lg-3'>
+          {% if user.img_link == None or user.img_link == "" %}
+          <img id='profile' class='mt-3 mx-auto' src="{% static 'userDashboard/images/no_profile.png' %}">
+          {% else %}
+          <img id='profile' class='mt-3 mx-auto' src="{{user.img_link}}">
+          {% endif %}
         </div>
-            {% if user.id != request.session.user_id %}
-            <form class ='mt-3' method ='POST' action='/message/{{user.id}}'>
-                {% csrf_token %}
-                <h4>Leave a message for {{user.first_name}}</h4>
-                <textarea name='message_description' class='form-control'></textarea>
-                <div class='row justify-content-end'>
-                    {% if messages %}
-                    {% for message in messages %}
-                    {% if message.tags == "add_message success" %}
-                        <p class='mr-3 my-auto text-success p-0'>{{message}}</p>
-                    {% endif %}
-                    {% endfor %}
-                    {% endif %}
-                <button type='submit' id='message_btn' class='mr-3 mt-3 text-right btn'>Message</button>
-                </div>
-            </form>
+          <div class='right-text col-lg-9 my-auto'>
+          <h4>{{user.first_name}} {{user.last_name}}</h4>
+          {% if messages %}
+          {% for message in messages %}
+          {% if message.tags == "add_friend success" %}
+              <p class='text-success p-0 my-auto'>{{message}}</p>
+          {% endif %}
+          {% endfor %}
+          {% endif %}
+          {% if curr_user_requests|length > 0 %}
+          {% elif curr_user_request_by|length > 0 %}
+          {% elif user.id != request.session.user_id %}
+          <a href='/add_friend/{{user.id}}'>Add Friend</a>
+          {% endif %}
+          <div class='row'>
+            <div class='labels col-lg-2 mt-2'>
+              <p>Registered at: </p>
+              <p>User ID: </p>
+              <p>Email address: </p>
+              <p>Description: </p>
+            </div>
+            <div class='data col-lg-4 mt-2'>
+              <p>{{user.created_at}}</p>
+              <p>#{{user.id}}</p>
+              <p>{{user.email}}</p>
+              <p>{{user.description}}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% if user.id != request.session.user_id %}
+      <form class ='mt-3' method ='POST' action='/message/{{user.id}}'>
+        {% csrf_token %}
+        <h4>Leave a message for {{user.first_name}}</h4>
+        <textarea name='message_description' class='form-control'></textarea>
+        <div class='row justify-content-end'>
+          {% if messages %}
+          {% for message in messages %}
+          {% if message.tags == "add_message success" %}
+            <p class='mr-3 my-auto text-success p-0'>{{message}}</p>
+          {% endif %}
+          {% endfor %}
+          {% endif %}
+          <button type='submit' id='message_btn' class='mr-3 mt-3 text-right btn'>Message</button>
+        </div>
+      </form>
+      {% else %}
+      {% endif %}
+      {% for message in user_messages %}
+      <div class='card mt-3 border border-dark'>
+        <div class ='card-body'>
+          <div class='row my-auto ml-0'>
+            {% if message.sender.img_link == None or message.sender.img_link == ""%}
+            <img id='miniprofile'class='mr-1' src="{% static 'userDashboard/images/no_profile.png' %}">
             {% else %}
+            <img id='miniprofile' class='mr-1' src="{{message.sender.img_link}}">
             {% endif %}
-            {% for message in user_messages %}
-            <div class='card mt-3 border border-dark'>
-                <div class ='card-body'>
-                    <div class='row my-auto ml-0'>
-                        {% if message.sender.img_link == None or message.sender.img_link == ""%}
-                        <img id='miniprofile'class='mr-1' src="{% static 'userDashboard/images/no_profile.png' %}">
-                        {% else %}
-                        <img id='miniprofile' class='mr-1' src="{{message.sender.img_link}}">
-                        {% endif %}
-                        <h5 class='card-title ml-2 mt-3'><a href='/profile/{{message.sender.id}}'>{{message.sender.first_name}} {{message.sender.last_name}}</a> messaged:</h5>
-                    </div>
-                        <h6 class='card-subtitle mt-2 mb-2'>{{message.created_at}}</h6>
-                        <p class='card-text mt-2 mb-2'>{{message.message}}</p>
-                        {% if message.receiver.id == request.session.user_id or curr_user.admin_level == "admin" or curr_user.admin_level == "superadmin" %}
-                        <a tabindex="0" class="popover-dismiss text-danger" role="button" data-toggle="popover" data-trigger="focus" title="Are you sure?" data-html="true" data-content="<a class='py-1 btn border border-dark' href='/delete_message/{{message.id}}/{{user.id}}'>Delete</a><a class='py-1 ml-3 btn bg-secondary border border-dark' href=''>Cancel</a>">Delete</a>
-                        {% endif %}
-                </div>
-            </div>
-            {% for comment in comments %}
-            {% if comment.the_message.id == message.id %}
-            <div class='card mt-3 border border-dark col-lg-10 ml-auto'>
-                <div class ='card-body'>
-                    <div class='row my-auto ml-0'>
-                        {% if comment.commenter.img_link == None or comment.commenter.img_link == "" %}
-                        <img id='miniprofile'class='mr-1' src="{% static 'userDashboard/images/no_profile.png' %}">
-                        {% else %}
-                        <img id='miniprofile' class='mr-1' src="{{comment.commenter.img_link}}">
-                        {% endif %}
-                        <h5 class='card-title ml-2 mt-3'><a href='/profile/{{comment.commenter.id}}'>{{comment.commenter.first_name}} {{comment.commenter.last_name}}</a> commented:</h5>
-                    </div>
-                        <h6 class='card-subtitle mt-2 text-muted'>{{comment.created_at}}</h6>
-                        <p class='card-text mt-2 mb-2'>{{comment.comment}}</p>
-                        {% if comment.recipient.id == request.session.user_id or comment.commenter.id == request.session.user_id or curr_user.admin_level == "admin" or curr_user.admin_level == "superadmin" %}
-                        <a tabindex="0" class="popover-dismiss text-danger" role="button" data-toggle="popover" data-trigger="focus" title="Are you sure?" data-html="true" data-content="<a class='py-1 btn border border-dark' href='/delete_comment/{{comment.id}}/{{user.id}}'>Delete</a><a class='py-1 ml-3 btn bg-secondary border border-dark' href=''>Cancel</a>">Delete</a>
-                        {% endif %}
-                    </div>
-            </div>
-            {% endif %}
-            {% endfor %}
-            <form class='col-lg-10 ml-auto p-0 mt-3' method="POST" action='/comment/{{user.id}}/{{message.id}}'>
-                {% csrf_token %}
-                <textarea name='comment_description' class='form-control'></textarea>
-                <div class='row justify-content-end'>
-                    {% if messages %}
-                    {% for message in messages %}
-                    {% if message.tags == "comment_added success" %}
-                        <p class='mr-3 my-auto text-success p-0'>{{message}}</p>
-                    {% endif %}
-                    {% endfor %}
-                    {% endif %}
-                    <button type='submit' id='comment_btn' class='mr-3 mt-3 btn'>Comment</button>
-                </div>
-            </form>
-            {% endfor %}
-            <div class='bottom pt-3 pb-3 border-top mt-5'>
-                <p>©ConnectUs Inc. · <a href=''>Privacy</a> · <a href=''>Terms</a></p>
-            </div>  
+            <h5 class='card-title ml-2 mt-3'><a href='/profile/{{message.sender.id}}'>{{message.sender.first_name}} {{message.sender.last_name}}</a> messaged:</h5>
+          </div>
+          <h6 class='card-subtitle mt-2 mb-2'>{{message.created_at}}</h6>
+          <p class='card-text mt-2 mb-2'>{{message.message}}</p>
+          {% if message.receiver.id == request.session.user_id or curr_user.admin_level == "admin" or curr_user.admin_level == "superadmin" %}
+          <a tabindex="0" class="popover-dismiss text-danger" role="button" data-toggle="popover" data-trigger="focus" title="Are you sure?" data-html="true" data-content="<a class='py-1 btn border border-dark' href='/delete_message/{{message.id}}/{{user.id}}'>Delete</a><a class='py-1 ml-3 btn bg-secondary border border-dark' href=''>Cancel</a>">Delete</a>
+          {% endif %}
         </div>
+      </div>
+      {% for comment in comments %}
+      {% if comment.the_message.id == message.id %}
+      <div class='card mt-3 border border-dark col-lg-10 ml-auto'>
+        <div class ='card-body'>
+          <div class='row my-auto ml-0'>
+            {% if comment.commenter.img_link == None or comment.commenter.img_link == "" %}
+            <img id='miniprofile'class='mr-1' src="{% static 'userDashboard/images/no_profile.png' %}">
+            {% else %}
+            <img id='miniprofile' class='mr-1' src="{{comment.commenter.img_link}}">
+            {% endif %}
+            <h5 class='card-title ml-2 mt-3'><a href='/profile/{{comment.commenter.id}}'>{{comment.commenter.first_name}} {{comment.commenter.last_name}}</a> commented:</h5>
+          </div>
+            <h6 class='card-subtitle mt-2 text-muted'>{{comment.created_at}}</h6>
+            <p class='card-text mt-2 mb-2'>{{comment.comment}}</p>
+            {% if comment.recipient.id == request.session.user_id or comment.commenter.id == request.session.user_id or curr_user.admin_level == "admin" or curr_user.admin_level == "superadmin" %}
+            <a tabindex="0" class="popover-dismiss text-danger" role="button" data-toggle="popover" data-trigger="focus" title="Are you sure?" data-html="true" data-content="<a class='py-1 btn border border-dark' href='/delete_comment/{{comment.id}}/{{user.id}}'>Delete</a><a class='py-1 ml-3 btn bg-secondary border border-dark' href=''>Cancel</a>">Delete</a>
+            {% endif %}
+        </div>
+      </div>
+      {% endif %}
+      {% endfor %}
+      <form class='col-lg-10 ml-auto p-0 mt-3' method="POST" action='/comment/{{user.id}}/{{message.id}}'>
+        {% csrf_token %}
+        <textarea name='comment_description' class='form-control'></textarea>
+        <div class='row justify-content-end'>
+          {% if messages %}
+          {% for message in messages %}
+          {% if message.tags == "comment_added success" %}
+            <p class='mr-3 my-auto text-success p-0'>{{message}}</p>
+          {% endif %}
+          {% endfor %}
+          {% endif %}
+          <button type='submit' id='comment_btn' class='mr-3 mt-3 btn'>Comment</button>
+        </div>
+      </form>
+      {% endfor %}
+      <div class='bottom pt-3 pb-3 border-top mt-5'>
+        <p>©ConnectUs Inc. · <a href=''>Privacy</a> · <a href=''>Terms</a></p>
+      </div>
     </div>
+  </div>
 </body>
 </html>
