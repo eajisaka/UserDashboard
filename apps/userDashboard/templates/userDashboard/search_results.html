@@ -57,7 +57,7 @@
         {% if search3|length == 0 and search2|length == 0 and search1|length == 0 %}
         <h4 class='mt-3'>Nothing found!</h4>
         {% endif %}
-        {% if search3 is string and search3 != None %}
+        {% if search3 != None and search3|length > 2 %}
         <h4 class='mt-3'>{{search3}}</h4>
         {% else %}
         <div class='left-column col-lg-6'>
@@ -82,7 +82,7 @@
         </div>
         {% endif %}
 
-        {% if search1|length > 0 %}
+        {% if search1 != None %}
         <div class='left-column col-lg-6'>
             {% for search in search1 %}
             <div class='card mt-3 border border-dark'>
@@ -105,7 +105,7 @@
         </div>
         {% endif %}
 
-        {% if search2|length > 0 %}
+        {% if search2 != None %}
         <div class='left-column col-lg-6'>
             {% for search in search2 %}
             <div class='card mt-3 border border-dark'>
@@ -127,9 +127,10 @@
             {% endfor %}
         </div>
         {% endif %}
+
         <div class='bottom pt-3 pb-3 border-top mt-5'>
             <p>©ConnectUs Inc. · <a href=''>Privacy</a> · <a href=''>Terms</a></p>
-        </div> 
+        </div>
     </div>
 </body>
 </html>
