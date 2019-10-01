@@ -9,6 +9,7 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     <script src="{% static 'userDashboard/js/pop_over.js' %}"></script>
     <link rel='stylesheet' href="{% static 'userDashboard/css/web_theme.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <body>
   <div class='top'>
@@ -48,10 +49,11 @@
       {% endif %}
       <li class='nav-item ml-auto my-auto'>
         <form method="GET" action='/search_results'>
-          <label for ='search_name' class='sr-only'>Search: </label>
-          <div class='row'>
+          <div class='input-group'>
             <input class='col-lg-10 form-control' type='text' placeholder='Search...' name="search_name">
-            <a href="#"><img id='magnify'src="{% static 'userDashboard/images/magnifier-tool.png' %}"></a>
+            <div class='input-group-append'>
+              <span class='input-group-text' id='basic-addon2'><i class="fa fa-search" aria-hidden="true"></i></span>
+            </div>
           </div>
         </form>
       </li>
@@ -61,12 +63,12 @@
     </ul>
   </div>
     <div class='container'>
-      <div class='row mt-3'>
+      <div class='row'>
         <div class='left-picture col-lg-3'>
           {% if user.img_link == None or user.img_link == "" %}
-          <img id='profile' class='mt-3 mx-auto' src="{% static 'userDashboard/images/no_profile.png' %}">
+          <img id='profile' class='m-auto' src="{% static 'userDashboard/images/no_profile.png' %}">
           {% else %}
-          <img id='profile' class='mt-3 mx-auto' src="{{user.img_link}}">
+          <img id='profile' class='m-auto' src="{{user.img_link}}">
           {% endif %}
         </div>
           <div class='right-text col-lg-9 my-auto'>
@@ -83,20 +85,10 @@
           {% elif user.id != request.session.user_id %}
           <a href='/add_friend/{{user.id}}'>Add Friend</a>
           {% endif %}
-          <div class='row'>
-            <div class='labels col-lg-2 mt-2'>
-              <p>Registered at: </p>
-              <p>User ID: </p>
-              <p>Email address: </p>
-              <p>Description: </p>
-            </div>
-            <div class='data col-lg-4 mt-2'>
-              <p>{{user.created_at}}</p>
-              <p>#{{user.id}}</p>
-              <p>{{user.email}}</p>
-              <p>{{user.description}}</p>
-            </div>
-          </div>
+
+          <p>Member since: {{user.created_at|date:"M d, Y"}}</p>
+          <p>Email address: {{user.email}}</p>
+          <p>Description: {{user.description}}</p>
         </div>
       </div>
       {% if user.id != request.session.user_id %}
@@ -112,7 +104,7 @@
           {% endif %}
           {% endfor %}
           {% endif %}
-          <button type='submit' id='message_btn' class='mr-3 mt-3 text-right btn'>Message</button>
+          <button type='submit' id='message_btn' class='mr-3 btn-sm mt-3 text-right btn'>Message</button>
         </div>
       </form>
       {% else %}
@@ -167,7 +159,7 @@
           {% endif %}
           {% endfor %}
           {% endif %}
-          <button type='submit' id='comment_btn' class='mr-3 mt-3 btn'>Comment</button>
+          <button type='submit' id='comment_btn' class='mr-3 mt-3  btn-sm btn'>Comment</button>
         </div>
       </form>
       {% endfor %}

@@ -89,7 +89,7 @@
                         {% endif %}
                         <h5 class='card-title ml-2 mt-3'><a href='/profile/{{friend.request_to.id}}'>{{friend.request_to.first_name}} {{friend.request_to.last_name}}</a> </h5>
                     </div>
-                    <h6 class='card-subtitle mt-2 mb-2'>Friends since: {{friend.created_at}}</h6>
+                    <h6 class='card-subtitle mt-2 mb-2'>Friends since: {{friend.created_at|date:"M d, Y"}}</h6>
                     <a tabindex="0" class="popover-dismiss text-danger" role="button" data-toggle="popover" data-trigger="focus" title="Are you sure?" data-html="true" data-content="<a class='py-1 btn' href='/remove_friend/{{friend.id}}'>Remove</a><a class='py-1 ml-3 btn bg-secondary' href=''>Cancel</a>">Remove</a>
                 </div>
             </div>
@@ -104,7 +104,7 @@
                         {% endif %}
                         <h5 class='card-title ml-2 mt-3'><a href='/profile/{{friend.friend_requester.id}}'>{{friend.friend_requester.first_name}} {{friend.friend_requester.last_name}}</a> </h5>
                     </div>
-                    <h6 class='card-subtitle mt-2 mb-2 text-muted'>Friends since: {{friend.created_at}}</h6>
+                    <h6 class='card-subtitle mt-2 mb-2 text-muted'>Friends since: {{friend.created_at|date:"M d, Y"}}</h6>
                     <a tabindex="0" class="popover-dismiss text-danger" role="button" data-toggle="popover" data-trigger="focus" title="Are you sure?" data-html="true" data-content="<a class='py-1 btn' href='/remove_friend/{{friend.id}}'>Remove</a><a class='py-1 ml-3 btn bg-secondary' href=''>Cancel</a>">Remove</a>
                     </div>
                 </div>
@@ -114,7 +114,7 @@
     </div>
         <div class='bottom pt-3 pb-3 border-top mt-5'>
             <p>©ConnectUs Inc. · <a href=''>Privacy</a> · <a href=''>Terms</a></p>
-        </div> 
+        </div>
     </div>
 </body>
 </html>
