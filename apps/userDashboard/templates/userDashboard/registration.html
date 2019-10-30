@@ -21,7 +21,7 @@
       </li>
     </ul>
   </div>
-    <div class='container text-left'>
+    <div class='container'>
       <div class='row mt-5'>
         <div class='left_side col-lg-6 my-auto'>
           <img src="{% static 'userDashboard/images/join_us.jpg' %}" id='register_icon'>
@@ -88,8 +88,10 @@
                 <input class='form-control' placeholder='Password' type='password' name='register_pass1'>
                 <input class='form-control ml-2' placeholder='Confirm' type='password' name='register_pass2'>
               </div>
-
-              <button class='btn btn-sm' type='submit'>Register</button>
+              <div class='row'>
+                <button class='btn btn-sm mx-auto' type='submit'>Register</button>
+              </div>
+                <p class='text-center mt-2'><a class='mt-2 ml-2' href='/signin'>Already registered?</a></p>
             </form>
           </div>
       </div>

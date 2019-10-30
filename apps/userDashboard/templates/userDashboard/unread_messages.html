@@ -9,6 +9,7 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     <script src="{% static 'userDashboard/js/admin_dashboard.js' %}"></script>
     <link rel='stylesheet' href="{% static 'userDashboard/css/web_theme.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <body>
     <div class='top'>
@@ -38,13 +39,14 @@
             </li>
             {% endif %}
             <li class='nav-item ml-auto my-auto'>
-                <form method="GET" action='search_results'>
-                    <label for ='search_name' class='sr-only'>Search: </label>
-                    <div class='row'>
-                    <input class='col-lg-10 form-control' type='text' placeholder='Search...' name="search_name">
-                    <a href="#"><img id='magnify' src="{% static 'userDashboard/images/magnifier-tool.png' %}"></a>
-                    </div>
-                </form>
+              <form method="GET" action='/search_results'>
+                <div class='input-group'>
+                  <input class='col-lg-10 form-control' type='text' placeholder='Search...' name="search_name">
+                  <div class='input-group-append'>
+                    <span class='input-group-text' id='basic-addon2'><i class="fa fa-search" aria-hidden="true"></i></span>
+                  </div>
+                </div>
+              </form>
             </li>
             <li class='mr-5 nav-item ml-3 my-auto'>
                 <a class='nav-link' href="/logout">Log Out</a>
@@ -59,7 +61,7 @@
         {% for message in new_messages %}
         <div class='card mt-3 border border-dark'>
             <div class ='card-body'>
-                <div class='row ml-0 my-auto'>                            
+                <div class='row ml-0 my-auto'>
                     {% if friend.request_to.img_link == None or friend.request_to.img_link == "" %}
                     <img id='miniprofile'class='mr-1' src="{% static 'userDashboard/images/no_profile.png' %}">
                         {% else %}
@@ -69,11 +71,11 @@
                 </div>
                 <h6 class='card-subtitle mb-2 mt-2'>{{message.created_at}}</h6>
                 <p class='card-text mb-2'>{{message.message}}</p>
-                <a tabindex="0" 
+                <a tabindex="0"
                 class="popover-dismiss text-danger"
-                role="button" 
+                role="button"
                 data-toggle="popover"
-                data-trigger="focus" 
+                data-trigger="focus"
                 title="Are you sure?"
                 data-html="true"
                 data-content="<a class='py-1 btn bg-danger' href='/delete_message/{{message.id}}/{{user.id}}'>Delete</a><a class='py-1 ml-3 btn' href=''>Cancel</a>">Delete</a>
@@ -82,7 +84,7 @@
         {% endfor %}
         <div class='bottom pt-3 pb-3 border-top text-left mt-5'>
             <p>©ConnectUs Inc. · <a href=''>Privacy</a> · <a href=''>Terms</a></p>
-        </div> 
+        </div>
     </div>
 </body>
 </html>

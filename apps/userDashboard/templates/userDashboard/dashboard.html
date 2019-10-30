@@ -9,6 +9,7 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     <script src="{% static 'userDashboard/js/pop_over.js' %}"></script>
     <link rel='stylesheet' href="{% static 'userDashboard/css/web_theme.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <body>
     <div class='top'>
@@ -38,13 +39,14 @@
             </li>
             {% endif %}
             <li class='nav-item ml-auto my-auto'>
-                    <form method="GET" action='/search_results'>
-                        <label for ='search_name' class='sr-only'>Search: </label>
-                        <div class='row'>
-                        <input class='col-lg-10 form-control' type='text' placeholder='Search...' name="search_name">
-                        <a href="#"><img id='magnify'src="{% static 'userDashboard/images/magnifier-tool.png' %}"></a>
-                        </div>
-                    </form>
+              <form method="GET" action='/search_results'>
+                <div class='input-group'>
+                  <input class='col-lg-10 form-control' type='text' placeholder='Search...' name="search_name">
+                  <div class='input-group-append'>
+                    <span class='input-group-text' id='basic-addon2'><i class="fa fa-search" aria-hidden="true"></i></span>
+                  </div>
+                </div>
+              </form>
                 </li>
             <li class='mr-5 nav-item ml-3 my-auto'>
                 <a class='nav-link' href="/logout">Log Out</a>
